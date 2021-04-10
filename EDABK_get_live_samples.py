@@ -1,5 +1,6 @@
 import os
 import json
+import random
 
 from config import opt
 from EDABK_utils import check_path_exist, move_files
@@ -12,6 +13,9 @@ def main() -> None:
     live_train = [key for (key, value) in train_json.items() if value[-1] == 0]
     live_test = [key for (key, value) in test_json.items() if value[-1] == 0]
 
+    random.shuffle(live_train)
+    random.shuffle(live_test)
+    
     move_files(opt.root, opt.print_root, live_train[:opt.NUMBER_OF_LIVE_SAMPLES_TRAIN], "live train")
     move_files(opt.root, opt.print_root, live_test[:opt.NUMBER_OF_LIVE_SAMPLES_TEST], "live test")
 
