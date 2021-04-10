@@ -42,9 +42,7 @@ def cal_metric(groundTruth, predicted):
 		plt.plot(xnew, ynew)
 
 		plt.show()
-	try:	
-		auc = roc_auc_score(groundTruth, predicted)
-	except ValueError:
-		pass
+	
+	auc = roc_auc_score(groundTruth, predicted)
 
 	return eer,TPRs, auc, {'x':xnew, 'y':ynew}
