@@ -37,6 +37,18 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 ## Kiểm thử
 - Để kiếm thử mạng: `python main.py test`
 
+## Xem lượng ảnh đã bị thay thế bằng 1 ảnh cứng nếu một số ảnh trong tập dữ liệu bị lỗi
+- Sau khi chạy các thứ xong xuôi, ta xem danh sách các ảnh lỗi trong tập dữ liệu đã được thay bằng ảnh cứng
+    - Các ảnh lỗi do quá trình cắt ảnh, trong file `broken_images/make_crop_image/broken.txt`.
+    - Các ảnh lỗi do quá trình đọc ảnh cắt vào model, trong file `broken_images/require_dataset_crop/broken.txt` cho dữ liệu train và `broken_images/require_dataset_crop/broken_test.txt` cho dữ liệu test.
+- Để xem lượng ảnh, thực hiện lần lượt
+    - Chạy `python clear_duplicate_txt.py dir_to_txt_file` (với `dir_to_txt_file` là đường dẫn) cho 3 đường dẫn tới 3 loại broken text file được liệt kê bên trên. Ví dụ:
+        `python clear_duplicate_txt.py "broken_images/make_crop_image/broken.txt"`
+        `python clear_duplicate_txt.py "broken_images/require_dataset_crop/broken.txt"`
+        `python clear_duplicate_txt.py "broken_images/require_dataset_crop/broken_test.txt"`
+    Khi đó ta đã clear được hết các ví dụ bị lặp, khi này ta có thể vào hẳn file đó để xem các đường dẫn của ảnh lỗi.
+    - Chạy `wc -l dir_to_txt_file` để đếm số ảnh trong các đường dẫn đó.
+
 ## Inference
 - Chạy image inference: `python inference.py inference --image="path_to_image"`, đầu ra ảnh sau inference cũng chính ở trong folder ảnh được chạy inference, với tên ảnh đầu ra được thêm cụm `evaluated`.
 - Chạy video inference: `python video_inference.py video_inference --video="path_to_video"`
