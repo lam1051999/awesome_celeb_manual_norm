@@ -1,0 +1,5 @@
+__pycache__/
+.vscode/
+broken_images/
+checkpoints/
+result/

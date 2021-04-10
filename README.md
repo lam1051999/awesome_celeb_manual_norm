@@ -1,0 +1,44 @@
+# awesome_celeb
+
+## Data
+- CelebA-Spoof [ECCV2020] A Large-Scale Face Anti-Spoofing Dataset
+
+## Sửa đường dẫn
+Sửa 2 đường dẫn trong **config.py** như sau:
+- `root` là đường dẫn đến tập dữ liệu Celeb được tải về.
+- `base_dir` là đường dẫn đến folder muốn đặt môi trường làm việc.
+
+Ví dụ dưới đây là sơ đồ `base_dir`, gồm folder `awesome_celeb` là folder chứa code của chúng ta, folder `metas` là folder label của mục label của chúng ta, `photo_celeb` là folder chứa ảnh đã cắt, `venv` là folder môi trường thư viện.
+
+![directory detail](dir.png)
+
+## Trích xuất ảnh photo từ tập celeb
+Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (photo, poster, A4) nằm trong Spoof Type lần lượt là (1, 2, 3).Ta sẽ trích xuất các ảnh in đó để huấn luyện mô hình
+
+![annotation detail](annotation.png)
+
+Để chạy trích xuất ảnh, ta thực hiện các bước
+- Thứ nhất: chạy `python EDABK_extract_from_celeb.py` để trích xuất ảnh photo, poster, A4 từ celeb.
+- Thứ hai: sau khi chạy lệnh thứ nhất, ta có được tổng số ảnh photo, poster, A4 lấy từ celeb, khi này, ta sẽ mong muốn lấy một lượng ảnh live từ celeb tùy vào lượng ảnh spoof đã lấy được từ bước thứ nhất. Muốn lấy ảnh live từ celeb, thực hiện lần lượt các bước sau:
+    - Vào **config.py**, sửa các biến `NUMBER_OF_LIVE_SAMPLES_TRAIN` là số ảnh live muốn lấy để train và `NUMBER_OF_LIVE_SAMPLES_TEST` là số ảnh live muốn lấy để test.
+    - Chạy `python EDABK_get_live_samples.py` để lấy ảnh live.  
+- Thứ hai: chạy `python EDABK_custom_data.py` để lấy label cho tập ảnh photo đã trích xuất.
+
+## Tiền xử lý ảnh (cắt ảnh)
+- Tập train: nếu ảnh bị lỗi, không đọc được, được thay bằng ảnh `/train_temp/052210_crop.jpg` với live example, `/train_temp/474951_crop.jpg` với spoof example.
+- Tập test: nếu ảnh bị lỗi, không đọc được, được thay bằng ảnh `/test_temp/498269_crop.png` với live example, `/test_temp/495026_crop.png` với spoof example.
+- Cắt ảnh train: `python make_crop_image.py train`
+- Cắt ảnh test: `python make_crop_image.py test`
+
+## Huấn luyện
+- Có thể chỉnh sửa một số thông số trong **config.py**, chọn mạng backbone, batchsize, epoch,...
+- Để huấn luyện mạng: `python main.py train`
+
+## Kiểm thử
+- Để kiếm thử mạng: `python main.py test`
+
+## Inference
+- Chạy image inference: `python inference.py inference --image="path_to_image"`, đầu ra ảnh sau inference cũng chính ở trong folder ảnh được chạy inference, với tên ảnh đầu ra được thêm cụm `evaluated`.
+- Chạy video inference: `python video_inference.py video_inference --video="path_to_video"`
+- Chạy webcam inference: `python webcam_inference.py webcam_inference`
+
