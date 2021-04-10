@@ -63,17 +63,17 @@ def make_crop(filelists, base_height):
                             file_object.write(im_p + "\n")
                         if "train" in im_p:
                             if "spoof" in im_p:
-                                im_temp = cv2.imread(os.path.join(opt.train_temp_images, "474951_crop.jpg"))
+                                im_temp = cv2.imread(os.path.join(opt.train_temp_images, "006485_crop.jpg"))
                                 cv2.imwrite(x, im_temp)
                             else:
-                                im_temp = cv2.imread(os.path.join(opt.train_temp_images, "052210_crop.jpg"))
+                                im_temp = cv2.imread(os.path.join(opt.train_temp_images, "006159_crop.jpg"))
                                 cv2.imwrite(x, im_temp)
                         else:
                             if "spoof" in im_p:
-                                im_temp = cv2.imread(os.path.join(opt.test_temp_images, "495026_crop.png"))
+                                im_temp = cv2.imread(os.path.join(opt.test_temp_images, "501103_crop.png"))
                                 cv2.imwrite(x, im_temp)
                             else:
-                                im_temp = cv2.imread(os.path.join(opt.test_temp_images, "498269_crop.png"))
+                                im_temp = cv2.imread(os.path.join(opt.test_temp_images, "495823_crop.png"))
                                 cv2.imwrite(x, im_temp)
 
 

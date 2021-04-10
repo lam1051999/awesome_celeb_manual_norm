@@ -90,8 +90,8 @@ def train(**kwargs):
         model.cuda()
         summary(model, (3, 224, 224))
     print(opt)
-    check_path_exist(opt.base_dir, "awesome_celeb/result")
-    check_path_exist(opt.base_dir, "awesome_celeb/checkpoints")
+    check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/result"))
+    check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/checkpoints"))
     # step2: 数据
     train_data = myDataCrop(filelists=opt.celeb_train_filelists, transform=None,
                             test=False, data_source=None, type_train="train", base_dir=opt.base_dir)

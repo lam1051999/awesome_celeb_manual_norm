@@ -28,8 +28,8 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 - Thứ hai: chạy `python EDABK_custom_data.py` để lấy label cho tập ảnh photo đã trích xuất.
 
 ## Tiền xử lý ảnh (cắt ảnh)
-- Tập train: nếu ảnh bị lỗi, không đọc được, được thay bằng ảnh `/train_temp/052210_crop.jpg` với live example, `/train_temp/474951_crop.jpg` với spoof example.
-- Tập test: nếu ảnh bị lỗi, không đọc được, được thay bằng ảnh `/test_temp/498269_crop.png` với live example, `/test_temp/495026_crop.png` với spoof example.
+- Tập train: nếu ảnh bị lỗi, không đọc được, được thay bằng ảnh `/train_temp/006159_crop.jpg` với live example, `/train_temp/006485_crop.jpg` với spoof example.
+- Tập test: nếu ảnh bị lỗi, không đọc được, được thay bằng ảnh `/test_temp/495823_crop.png` với live example, `/test_temp/501103_crop.png` với spoof example.
 - Cắt ảnh train: `python make_crop_image.py train`
 - Cắt ảnh test: `python make_crop_image.py test`
 
