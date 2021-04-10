@@ -3,6 +3,9 @@
 ## Data
 - CelebA-Spoof [ECCV2020] A Large-Scale Face Anti-Spoofing Dataset
 
+## Thư viện
+Các thư viện được liệt trong `requirements.txt`.
+
 ## Sửa đường dẫn
 Sửa 2 đường dẫn trong **config.py** như sau:
 - `root` là đường dẫn đến tập dữ liệu Celeb được tải về.
