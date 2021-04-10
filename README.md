@@ -52,6 +52,10 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
     Khi đó ta đã clear được hết các ví dụ bị lặp, khi này ta có thể vào hẳn file đó để xem các đường dẫn của ảnh lỗi.
     - Chạy `wc -l dir_to_txt_file` để đếm số ảnh trong các đường dẫn đó.
 
+## Xem kết quả
+- Xem kết quả trên tập validation: `cat result/val.txt`
+- Xem kết quả trên tập test: `cat result/test.txt`
+
 ## Inference
 - Chạy image inference: `python inference.py inference --image="path_to_image"`, đầu ra ảnh sau inference cũng chính ở trong folder ảnh được chạy inference, với tên ảnh đầu ra được thêm cụm `evaluated`.
 - Chạy video inference: `python video_inference.py video_inference --video="path_to_video"`
