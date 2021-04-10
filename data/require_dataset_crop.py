@@ -29,14 +29,14 @@ class myDataCrop(torch.utils.data.Dataset):
             json_dict = json.load(open(filelists[1]))
             json_dict_keys = list(json_dict.keys())
             if type_train == "train":
-                for k in json_dict_keys[:int(len(json_dict_keys) * 70/100)]:
+                for k in json_dict_keys[:int(len(json_dict_keys) * 85/100)]:
                     p_ = os.path.join(base_dir, k.replace("Data", "crop"))
                     partitions = p_.split(".")
                     if len(partitions) == 2:
                         self.img_label.append({'path': (
                             partitions[0]+"_crop." + partitions[1]), 'class': json_dict[k][-1]})
             elif type_train == "val":
-                for k in json_dict_keys[int(len(json_dict_keys) * 70/100):]:
+                for k in json_dict_keys[int(len(json_dict_keys) * 85/100):]:
                     p_ = os.path.join(base_dir, k.replace("Data", "crop"))
                     partitions = p_.split(".")
                     if len(partitions) == 2:
