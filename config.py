@@ -15,11 +15,17 @@ class DefaultConfig(object):
     base_dir = "/media/tranlam/Data_Storage/AI/Liveness/complete/"
     print_root = os.path.join(base_dir, "photo_celeb/CelebA_Spoof/") 
     intra_test_temp = os.path.join(base_dir, "metas/intra_test/")
+    our_data = os.path.join(base_dir, "our_data/")
 
     make_crop_broken_images = os.path.join(base_dir, "awesome_celeb/broken_images/make_crop_image/")
     rqds_crop_broken_images_train = os.path.join(base_dir, "awesome_celeb/broken_images/require_dataset_crop/")
     train_temp_images = os.path.join(base_dir, "awesome_celeb/train_temp/")
     test_temp_images = os.path.join(base_dir, "awesome_celeb/test_temp/")
+
+    make_crop_our_broken_images = os.path.join(base_dir, "awesome_celeb/our_broken_images/make_crop_image/")
+    rqds_crop_our_broken_images_train = os.path.join(base_dir, "awesome_celeb/our_broken_images/require_dataset_crop/")
+    our_train_temp_images = os.path.join(base_dir, "awesome_celeb/our_train_temp/")
+    our_test_temp_images = os.path.join(base_dir, "awesome_celeb/our_test_temp/")
 
     celeb_train_filelists = [
         print_root, os.path.join(intra_test_temp, "train_label.json")

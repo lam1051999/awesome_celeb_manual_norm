@@ -38,7 +38,7 @@ def cal_metric(groundTruth, predicted):
 
 		TPRs[key] = float(np.squeeze(score))
 #	    print(key, score)
-	if 0:
+	if 1:
 		plt.plot(xnew, ynew)
 
 		plt.show()

@@ -3,6 +3,7 @@ from config import opt
 import os
 import models
 from data import myDataCrop
+from data import ourData
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from torchnet import meter
@@ -265,6 +266,63 @@ def test(**kwargs):
     # 		test = True,data_source = 'none')
     test_data = myDataCrop(filelists=opt.celeb_test_filelists, transform=None,
                            test=False, data_source=None, type_train="test", base_dir=opt.base_dir)
+  #	test_data = myData(root = opt.test_roo,datatxt='test.txt',
+  #				test = True,transform = data_transforms['test'])
+    test_loader = DataLoader(
+        dataset=test_data, batch_size=opt.batch_size//2, shuffle=False)
+    #test_loader =DataLoader(dataset = test_data,batch_size = opt.batch_size//2,shuffle =True)
+
+    result_list = []
+
+    label_list = []
+
+    for step, batch in enumerate(tqdm(test_loader, desc='test %s' % (opt.model), unit='batch')):
+        data, label = batch
+        with torch.no_grad():
+            if opt.use_gpu:
+                data = data.cuda()
+            outputs = model(data)
+            outputs = torch.softmax(outputs, dim=-1)
+            preds = outputs.to('cpu').numpy()
+            for i in range(preds.shape[0]):
+                result_list.append(preds[i, 1])
+                label_list.append(label[i])
+    metric = roc.cal_metric(label_list, result_list)
+    eer = metric[0]
+    tprs = metric[1]
+    auc = metric[2]
+    xy_dic = metric[3]
+    pickle.dump(xy_dic, open('result/xy.pickle', 'wb'))
+    print('EER: {:.6f} TPR(1.0%): {:.6f} TPR(.5%): {:.6f} AUC: {:.8f}'.format(
+        eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc), file=open('result/test.txt', 'a'))
+    print('EER: {:.6f} TPR(1.0%): {:.6f} TPR(.5%): {:.6f} AUC: {:.8f}'.format(
+        eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc))
+
+def test_our_data(**kwargs):
+    import glob
+    pths = glob.glob('checkpoints_3/%s/*.pth' % (opt.model))
+    pths.sort(key=os.path.getmtime, reverse=True)
+    print(pths)
+    opt.parse(kwargs)
+    # 模型
+    opt.load_model_path = pths[0]
+    model = getattr(models, opt.model)().eval()
+    assert os.path.exists(opt.load_model_path)
+    if opt.load_model_path:
+        model.load(opt.load_model_path)
+    if opt.use_gpu:
+        model.cuda()
+    model.train(False)
+    # 数据
+    #result_name = '../../model/se-resnet/test_se_resnet50'
+    # test_data = myData(
+    # 		filelists =opt.test_filelists,
+    # 		#transform =data_transforms['val'],
+    # 		transform =None,
+    #                       scale = opt.cropscale,
+    # 		test = True,data_source = 'none')
+    test_data = ourData(label="test", transform=None,
+                           test=False, data_source=None, type_train="test", our_data_path=opt.our_data)
   #	test_data = myData(root = opt.test_roo,datatxt='test.txt',
   #				test = True,transform = data_transforms['test'])
     test_loader = DataLoader(
