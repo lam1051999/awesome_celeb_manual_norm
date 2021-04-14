@@ -300,7 +300,7 @@ def test(**kwargs):
 
 def test_our_data(**kwargs):
     import glob
-    pths = glob.glob('checkpoints_3/%s/*.pth' % (opt.model))
+    pths = glob.glob('checkpoints-photo-celeb/%s/*.pth' % (opt.model))
     pths.sort(key=os.path.getmtime, reverse=True)
     print(pths)
     opt.parse(kwargs)
@@ -344,6 +344,7 @@ def test_our_data(**kwargs):
             for i in range(preds.shape[0]):
                 result_list.append(preds[i, 1])
                 label_list.append(label[i])
+    print(result_list)
     metric = roc.cal_metric(label_list, result_list)
     eer = metric[0]
     tprs = metric[1]

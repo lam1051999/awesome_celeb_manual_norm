@@ -4,3 +4,8 @@ broken_images/
 checkpoints/
 result/
 checkpoints_3/
+checkpoints_xception/
+checkpoints_xception_thay_hoang/
+checkpoints-celeb/
+checkpoints-photo-celeb/
+pre-trainedModels/

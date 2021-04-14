@@ -61,3 +61,18 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 - Chạy video inference: `python video_inference.py video_inference --video="path_to_video"`
 - Chạy webcam inference: `python webcam_inference.py webcam_inference`
 
+## Chạy testing với dữ liệu của ta
+- Một số phần mới được thêm vào phục vụ cho việc test cần chú ý để tránh conflict khi pull.
+    - Thêm các đường dẫn mới vào `config.py`
+    - Thêm 2 folder `our_test_temp` và `our_train_temp`
+    - Thêm file `data/require_our_data.py`
+    - Thêm file `make_crop_our_data.py`
+- Chuẩn bị dữ liệu test.
+    - Tạo một folder tên `our_data` tại đường môi trường làm việc là `base_dir` ở các mục đầu
+        ![base dir](base_dir.png)
+    Trong folder `our_data` này, ta triển khai đặt các folder live và spoof như sau
+        ![our data dir](test_data.png)
+    Folder live chứa các ảnh thật, folder spoof chứa các ảnh giả mạo.
+- Cắt ảnh test: `python make_crop_our_data.py test`
+- Trong file `main.py`, ở hàm `def test_our_data(**kwargs)` chỉnh dòng `pths = glob.glob('checkpoints-photo-celeb/%s/*.pth' % (opt.model))` cho phù hợp để nó trỏ đến folder checkpoints của ta.
+- Chạy test: `python main.py test_our_data`

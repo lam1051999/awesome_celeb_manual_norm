@@ -28,7 +28,7 @@ def webcam_inference():
 
 
     # load model
-    pths = glob.glob('checkpoints/%s/*.pth' % (opt.model))
+    pths = glob.glob('checkpoints-photo-celeb/%s/*.pth' % (opt.model))
     pths.sort(key=os.path.getmtime, reverse=True)
     print(pths)
 
@@ -67,7 +67,7 @@ def webcam_inference():
                     face = im[startY:endY, startX:endX]
                     if 0 not in face.shape:
                         im = cv2.rectangle(im, (startX, startY), (endX, endY), color, thickness)
-                        face = cv2.resize(face, (224, 224))
+                        face = cv2.resize(face, (opt.image_size, opt.image_size))
                         face = np.transpose(np.array(face, dtype=np.float32), (2, 0, 1))
                         face = face[np.newaxis, :]
                         face = torch.FloatTensor(face)
