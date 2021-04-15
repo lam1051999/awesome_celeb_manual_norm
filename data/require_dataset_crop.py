@@ -31,24 +31,21 @@ class myDataCrop(torch.utils.data.Dataset):
             if type_train == "train":
                 for k in json_dict_keys[:int(len(json_dict_keys) * 85/100)]:
                     p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    partitions = p_.split(".")
-                    if len(partitions) == 2:
-                        self.img_label.append({'path': (
-                            partitions[0]+"_crop." + partitions[1]), 'class': json_dict[k][-1]})
+                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
+                        if (p_.split("/")[-1]).split(".")[0] in f:
+                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
             elif type_train == "val":
                 for k in json_dict_keys[int(len(json_dict_keys) * 85/100):]:
                     p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    partitions = p_.split(".")
-                    if len(partitions) == 2:
-                        self.img_label.append({'path': (
-                            partitions[0]+"_crop." + partitions[1]), 'class': json_dict[k][-1]})
+                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
+                        if (p_.split("/")[-1]).split(".")[0] in f:
+                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
             elif type_train == "test":
                 for k in json_dict_keys:
                     p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    partitions = p_.split(".")
-                    if len(partitions) == 2:
-                        self.img_label.append({'path': (
-                            partitions[0]+"_crop." + partitions[1]), 'class': json_dict[k][-1]})
+                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
+                        if (p_.split("/")[-1]).split(".")[0] in f:
+                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
             else:
                 raise Exception("No available data type")
             # write logic for the data if it is test data
@@ -60,13 +57,14 @@ class myDataCrop(torch.utils.data.Dataset):
             try:
                 img = cv2.imread(image_path)
                 img = cv2.resize(img, (self.image_size, self.image_size))
+                img = img/255.0
                 if self.transform is not None:
-                    # print(self.transform)
                     img = self.transform(img)
                 return np.transpose(np.array(img, dtype=np.float32), (2, 0, 1)), int(label)
 
             except Exception as e:
                 # get broken images
+                print(e)
                 check_path_exist(opt.rqds_crop_broken_images_train)
                 if self.type_train == "train" or self.type_train == "val":
                     with open(os.path.join(opt.rqds_crop_broken_images_train, "broken.txt"), "a") as file_object:
@@ -79,22 +77,26 @@ class myDataCrop(torch.utils.data.Dataset):
                         temp = cv2.imread(os.path.join(opt.train_temp_images, "006485_crop.jpg"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
                     else:
                         temp = cv2.imread(os.path.join(opt.train_temp_images, "006159_crop.jpg"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
                 else:
                     if "spoof" in image_path:
                         temp = cv2.imread(os.path.join(opt.test_temp_images, "501103_crop.png"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
                     else:
                         temp = cv2.imread(os.path.join(opt.test_temp_images, "495823_crop.png"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
 
             # write logic for the data if it is test data

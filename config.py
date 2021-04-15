@@ -9,8 +9,8 @@ class DefaultConfig(object):
     ATTACK = 1
     GENUINE = 0
 
-    NUMBER_OF_LIVE_SAMPLES_TRAIN = 5000
-    NUMBER_OF_LIVE_SAMPLES_TEST = 2000 
+    NUMBER_OF_LIVE_SAMPLES_TRAIN = 15000
+    NUMBER_OF_LIVE_SAMPLES_TEST = 5000 
     root = "/home/tranlam/Downloads/celeb/CelebA_Spoof/"
     base_dir = "/media/tranlam/Data_Storage/AI/Liveness/complete/"
     print_root = os.path.join(base_dir, "photo_celeb/CelebA_Spoof/") 

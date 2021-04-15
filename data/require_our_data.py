@@ -51,9 +51,8 @@ class ourData(torch.utils.data.Dataset):
             try:
                 img = cv2.imread(image_path)
                 img = cv2.resize(img, (self.image_size, self.image_size))
-                # img = img/255.0
+                img = img/255.0
                 if self.transform is not None:
-                    # print(self.transform)
                     img = self.transform(img)
                 return np.transpose(np.array(img, dtype=np.float32), (2, 0, 1)), int(label)
 
@@ -71,26 +70,26 @@ class ourData(torch.utils.data.Dataset):
                         temp = cv2.imread(os.path.join(opt.our_train_temp_images, "spoof.jpg"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
-                        # temp = temp/255.0
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
                     else:
                         temp = cv2.imread(os.path.join(opt.our_train_temp_images, "live.jpeg"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
-                        # temp = temp/255.0
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
                 else:
                     if "spoof" in image_path:
                         temp = cv2.imread(os.path.join(opt.our_test_temp_images, "spoof.jpg"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
-                        # temp = temp/255.0
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
                     else:
                         temp = cv2.imread(os.path.join(opt.our_test_temp_images, "live.jpeg"))
                         temp = cv2.resize(
                             temp, (self.image_size, self.image_size))
-                        # temp = temp/255.0
+                        temp = temp/255.0
                         return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
 
             # write logic for the data if it is test data

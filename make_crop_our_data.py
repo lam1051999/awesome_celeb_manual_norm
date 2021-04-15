@@ -11,7 +11,7 @@ from EDABK_utils import check_path_exist
 type_dir = sys.argv[1]
 
 
-def make_crop(base_height, label):
+def make_crop(label):
     root_split = opt.our_data.split("/")
     for i in range(len(root_split) - 1, -1, -1):
         if len(root_split[i]) != 0:
@@ -29,35 +29,32 @@ def make_crop(base_height, label):
             partitions = image_.split(".")
             x = partitions[0] + "_crop." + partitions[1]
             x = os.path.join(root_temp, label, class_, x)
-            if not os.path.exists(x):
+            if not os.path.exists(os.path.join(root_temp, label, class_, "{}_crop_1.{}".format(partitions[0], partitions[1]))):
                 try:
                     im = cv2.imread(im_p)
-                    # if im.shape[0] > base_height:
-                    #     down_scale = math.ceil(im.shape[0] / base_height)
-                    #     im = cv2.resize(im, (im.shape[1]//down_scale, im.shape[0]//down_scale),
-                    #                     interpolation=cv2.INTER_AREA)
                     (h, w) = im.shape[:2]
                     blob = cv2.dnn.blobFromImage(
                         im, 1.0, (IMG_WIDTH, IMG_HEIGHT), (104.0, 177.0, 123.0))
                     net.setInput(blob)
                     detections = net.forward()
                     if len(detections) > 0:
-                        i = np.argmax(detections[0, 0, :, 2])
-                        confidence = detections[0, 0, i, 2]
-
-                        if confidence > 0.5:
-                            box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                            (startX, startY, endX, endY) = box.astype("int")
-                            face = im[startY:endY, startX:endX]
-                            if not os.path.exists(x[:len(x) - len(x.split("/")[-1])]):
-                                os.makedirs(x[:len(x) - len(x.split("/")[-1])])
-
-                            cv2.imwrite(x, face)
-                        else:
-                            cv2.imwrite(x, im)
+                        count = 0
+                        for i in range(detections.shape[2]):
+                            confidence = detections[0, 0, i, 2]
+                            if confidence >= 0.6:
+                                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                                (startX, startY, endX, endY) = box.astype("int")
+                                if not os.path.exists(x[:len(x) - len(x.split("/")[-1])]):
+                                    os.makedirs(x[:len(x) - len(x.split("/")[-1])])
+                                if startX <= w and endX <= w and startY <= h and endY <= h:
+                                    count += 1
+                                    face = im[startY:endY, startX:endX]
+                                    cv2.imwrite(os.path.join(root_temp, label, class_, "{}_crop_{}.{}".format(partitions[0], count, partitions[1])), face)
+                        if count == 0:
+                            cv2.imwrite(os.path.join(root_temp, label, class_, "{}_crop_1.{}".format(partitions[0], partitions[1])), im)
                 except Exception as e:
                     try:
-                        cv2.imwrite(x, im)
+                        cv2.imwrite(os.path.join(root_temp, label, class_, "{}_crop_1.{}".format(partitions[0], partitions[1])), im)
                     except Exception as e1:
                         check_path_exist(opt.make_crop_our_broken_images)
                         with open(os.path.join(opt.make_crop_our_broken_images, "broken.txt"), "a") as file_object:
@@ -65,17 +62,17 @@ def make_crop(base_height, label):
                         if "train" in im_p:
                             if "spoof" in im_p:
                                 im_temp = cv2.imread(os.path.join(opt.our_train_temp_images, "spoof.jpg"))
-                                cv2.imwrite(x, im_temp)
+                                cv2.imwrite(os.path.join(root_temp, label, class_, "{}_crop_1.{}".format(partitions[0], partitions[1])), im_temp)
                             else:
                                 im_temp = cv2.imread(os.path.join(opt.our_train_temp_images, "live.jpeg"))
-                                cv2.imwrite(x, im_temp)
+                                cv2.imwrite(os.path.join(root_temp, label, class_, "{}_crop_1.{}".format(partitions[0], partitions[1])), im_temp)
                         else:
                             if "spoof" in im_p:
                                 im_temp = cv2.imread(os.path.join(opt.our_test_temp_images, "spoof.jpg"))
-                                cv2.imwrite(x, im_temp)
+                                cv2.imwrite(os.path.join(root_temp, label, class_, "{}_crop_1.{}".format(partitions[0], partitions[1])), im_temp)
                             else:
                                 im_temp = cv2.imread(os.path.join(opt.our_test_temp_images, "live.jpeg"))
-                                cv2.imwrite(x, im_temp)
+                                cv2.imwrite(os.path.join(root_temp, label, class_, "{}_crop_1.{}".format(partitions[0], partitions[1])), im_temp)
 
 
 if __name__ == "__main__":
@@ -88,8 +85,7 @@ if __name__ == "__main__":
         protoPath = opt.protoPath
         modelPath = opt.modelPath
         net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
-        BASE_HEIGHT = 800
         if type_dir == "train":
-            make_crop(BASE_HEIGHT, "train")
+            make_crop("train")
         elif type_dir == "test":
-            make_crop(BASE_HEIGHT, "test")
+            make_crop("test")
