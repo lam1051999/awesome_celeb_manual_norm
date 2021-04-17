@@ -4,6 +4,7 @@ import os
 import models
 from data import myDataCrop
 from data import ourData
+from data import mergedData
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from torchnet import meter
@@ -94,9 +95,9 @@ def train(**kwargs):
     check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/result"))
     check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/checkpoints"))
     # step2: 数据
-    train_data = myDataCrop(filelists=opt.celeb_train_filelists, transform=None,
+    train_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
                             test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
-    val_data = myDataCrop(filelists=opt.celeb_train_filelists, transform=None,
+    val_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
                           test=False, data_source=None, type_train="val", base_dir=opt.base_dir)
 
     train_loader = DataLoader(dataset=train_data,
@@ -264,7 +265,7 @@ def test(**kwargs):
     # 		transform =None,
     #                       scale = opt.cropscale,
     # 		test = True,data_source = 'none')
-    test_data = myDataCrop(filelists=opt.celeb_test_filelists, transform=None,
+    test_data = mergedData(filelists=opt.celeb_test_filelists, data_filelists=opt.data_test_filelists, transform=None,
                            test=False, data_source=None, type_train="test", base_dir=opt.base_dir)
   #	test_data = myData(root = opt.test_roo,datatxt='test.txt',
   #				test = True,transform = data_transforms['test'])

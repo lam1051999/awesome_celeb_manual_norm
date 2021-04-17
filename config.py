@@ -16,6 +16,7 @@ class DefaultConfig(object):
     print_root = os.path.join(base_dir, "photo_celeb/CelebA_Spoof/") 
     intra_test_temp = os.path.join(base_dir, "metas/intra_test/")
     our_data = os.path.join(base_dir, "our_data/")
+    our_label = os.path.join(our_data, "label/")
 
     make_crop_broken_images = os.path.join(base_dir, "awesome_celeb/broken_images/make_crop_image/")
     rqds_crop_broken_images_train = os.path.join(base_dir, "awesome_celeb/broken_images/require_dataset_crop/")
@@ -34,6 +35,12 @@ class DefaultConfig(object):
         print_root, os.path.join(intra_test_temp, "test_label.json")
     ]
 
+    data_train_filelists = [
+        our_data, os.path.join(our_label, "train.json")
+    ]
+    data_test_filelists = [
+        our_data, os.path.join(our_label, "test.json")
+    ]
 
     protoPath = os.path.join(base_dir, "awesome_celeb/crop_model/deploy.prototxt") 
     modelPath = os.path.join(base_dir, "awesome_celeb/crop_model/res10_300x300_ssd_iter_140000.caffemodel")
@@ -43,8 +50,8 @@ class DefaultConfig(object):
     load_model_path = None  # 加载预训练的模型的路径，为None代表不加载
 
     batch_size = 16  # batch size
-    use_gpu = torch.cuda.is_available()  # use GPU or not
-    # use_gpu = False  # use GPU or not
+    # use_gpu = torch.cuda.is_available()  # use GPU or not
+    use_gpu = False  # use GPU or not
     num_workers = 4  # how many workers for loading data
     print_freq = 20  # print info every N batch
     debug_file = '/tmp/debug'  # if os.path.exists(debug_file): enter ipdb
