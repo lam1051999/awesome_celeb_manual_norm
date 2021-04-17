@@ -27,6 +27,8 @@ def make_crop(filelists, data_filelists):
             x = x.replace("Data", "crop")
             x = os.path.join(opt.base_dir, x)
             if not os.path.exists(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop"))):
+                if not os.path.exists(x[:len(x) - len(x.split("/")[-1])]):
+                    os.makedirs(x[:len(x) - len(x.split("/")[-1])])
                 try:
                     im = cv2.imread(im_p)
                     (h, w) = im.shape[:2]
@@ -38,11 +40,9 @@ def make_crop(filelists, data_filelists):
                         count = 0
                         for i in range(detections.shape[2]):
                             confidence = detections[0, 0, i, 2]
-                            if confidence >= 0.6:
+                            if confidence >= 0.5:
                                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                                 (startX, startY, endX, endY) = box.astype("int")
-                                if not os.path.exists(x[:len(x) - len(x.split("/")[-1])]):
-                                    os.makedirs(x[:len(x) - len(x.split("/")[-1])])
                                 if startX <= w and endX <= w and startY <= h and endY <= h:
                                     count += 1
                                     face = im[startY:endY, startX:endX]
@@ -93,7 +93,7 @@ def make_crop(filelists, data_filelists):
                         count = 0
                         for i in range(detections.shape[2]):
                             confidence = detections[0, 0, i, 2]
-                            if confidence >= 0.6:
+                            if confidence >= 0.5:
                                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                                 (startX, startY, endX, endY) = box.astype("int")
                                 if not os.path.exists(x[:len(x) - len(x.split("/")[-1])]):

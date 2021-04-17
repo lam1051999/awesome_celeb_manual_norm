@@ -9,8 +9,16 @@ class DefaultConfig(object):
     ATTACK = 1
     GENUINE = 0
 
-    NUMBER_OF_LIVE_SAMPLES_TRAIN = 15000
-    NUMBER_OF_LIVE_SAMPLES_TEST = 5000 
+    NUMBER_OF_LIVE_SAMPLES_TRAIN = 3000
+    NUMBER_OF_LIVE_SAMPLES_TEST = 1000
+    GET_ALL_CELEB_PHOTO = False
+    NUMBER_OF_PHOTO_TRAIN = 1500
+    NUMBER_OF_PHOTO_TEST = 500
+    NUMBER_OF_POSTER_TRAIN = 1500
+    NUMBER_OF_POSTER_TEST = 500
+    NUMBER_OF_A4_TRAIN = 1500
+    NUMBER_OF_A4_TEST = 500
+
     root = "/home/tranlam/Downloads/celeb/CelebA_Spoof/"
     base_dir = "/media/tranlam/Data_Storage/AI/Liveness/complete/"
     print_root = os.path.join(base_dir, "photo_celeb/CelebA_Spoof/") 

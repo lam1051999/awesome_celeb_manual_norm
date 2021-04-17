@@ -80,6 +80,7 @@ class mergedData(torch.utils.data.Dataset):
         if self.test == False:
             image_path = self.img_label[index]['path']
             label = self.img_label[index]['class']
+            print("{} {}".format(image_path, label))
             try:
                 img = cv2.imread(image_path)
                 img = cv2.resize(img, (self.image_size, self.image_size))

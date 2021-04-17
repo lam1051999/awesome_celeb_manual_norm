@@ -31,7 +31,9 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 ![annotation detail](annotation.png)
 
 Để chạy trích xuất ảnh, ta thực hiện các bước
-- Thứ nhất: chạy `python EDABK_extract_from_celeb.py` để trích xuất ảnh photo, poster, A4 từ celeb.
+- Thứ nhất, vì lượng dữ liệu hiện có của ta còn ít, nên ta có thể cân nhắc lấy hết hoặc chỉ lấy một phần của CelebA-Spoof
+    - Vào **config.py**, sửa các biến `GET_ALL_CELEB_PHOTO` thể hiện cho việc có lấy tất cả dữ liệu photo hay không, nếu không, cần phải sửa các biến `NUMBER_OF_PHOTO_TRAIN`, `NUMBER_OF_PHOTO_TEST`, `NUMBER_OF_POSTER_TRAIN`, `NUMBER_OF_POSTER_TEST`, `NUMBER_OF_A4_TRAIN`, `NUMBER_OF_A4_TEST` thể hiện lượng ảnh photo mà ta muốn lấy ở CelebA-Spoof.
+    - Chạy `python EDABK_extract_from_celeb.py` để trích xuất ảnh photo, poster, a4 từ CelebA-Spoof.
 - Thứ hai: sau khi chạy lệnh thứ nhất, ta có được tổng số ảnh photo, poster, A4 lấy từ celeb, khi này, ta sẽ mong muốn lấy một lượng ảnh live từ celeb tùy vào lượng ảnh spoof đã lấy được từ bước thứ nhất. Muốn lấy ảnh live từ celeb, thực hiện lần lượt các bước sau:
     - Vào **config.py**, sửa các biến `NUMBER_OF_LIVE_SAMPLES_TRAIN` là số ảnh live muốn lấy để train và `NUMBER_OF_LIVE_SAMPLES_TEST` là số ảnh live muốn lấy để test.
     - Chạy `python EDABK_get_live_samples.py` để lấy ảnh live.  
