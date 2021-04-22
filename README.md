@@ -19,7 +19,7 @@ Ví dụ dưới đây là sơ đồ `base_dir`, gồm folder `awesome_celeb` l�
 ## Tổ chức dữ liệu của ta
 - Tại folder môi trường làm việc `base_dir`, ta đặt folder dữ liệu của ta tên là `our_data` có cấu trúc như sau
 
-![our data](our_data.PNG)
+![our data](our_data.png)
 
 **Chú ý:** Cần kiểm tra đúng thứ tự các ảnh (ảnh trực diện -> ảnh góc 12h -> ảnh góc 3h -> ảnh góc 6h -> ảnh góc 9h) trong các folder live và spoof, có thể trong quá trình di chuyển ảnh bị mất mát một số ảnh, nhưng, code chỉ chạy đúng nếu như thứ tự các ảnh đúng.
 - Đổi tên ảnh train: `python EDABK_change_filenames.py train`
