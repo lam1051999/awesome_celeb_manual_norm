@@ -22,59 +22,39 @@ class mergedData(torch.utils.data.Dataset):
         self.img_label = []
         self.image_size = image_size
         self.type_train = type_train
+        self.base_dir = base_dir
         print('myData, test=', self.test)
 
         if self.test == False:
-            # Loading and processing intra_test json
-            json_dict = json.load(open(filelists[1]))
-            json_dict_keys = list(json_dict.keys())
-            if type_train == "train":
-                for k in json_dict_keys[:int(len(json_dict_keys) * 85/100)]:
-                    p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
-                        if (p_.split("/")[-1]).split(".")[0] in f:
-                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
-            elif type_train == "val":
-                for k in json_dict_keys[int(len(json_dict_keys) * 85/100):]:
-                    p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
-                        if (p_.split("/")[-1]).split(".")[0] in f:
-                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
-            elif type_train == "test":
-                for k in json_dict_keys:
-                    p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
-                        if (p_.split("/")[-1]).split(".")[0] in f:
-                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
-            else:
-                raise Exception("No available data type")
-
-            # Loading and processing our data
-            json_dict = json.load(open(data_filelists[1]))
-            json_dict_keys = list(json_dict.keys())
-            if type_train == "train":
-                for k in json_dict_keys[:int(len(json_dict_keys) * 85/100)]:
-                    p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
-                        if (p_.split("/")[-1]).split(".")[0] in f:
-                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
-            elif type_train == "val":
-                for k in json_dict_keys[int(len(json_dict_keys) * 85/100):]:
-                    p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
-                        if (p_.split("/")[-1]).split(".")[0] in f:
-                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
-            elif type_train == "test":
-                for k in json_dict_keys:
-                    p_ = os.path.join(base_dir, k.replace("Data", "crop"))
-                    for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
-                        if (p_.split("/")[-1]).split(".")[0] in f:
-                            self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
-            else:
-                raise Exception("No available data type")
+            self.load_filelists(filelists)
+            self.load_filelists(data_filelists)
 
         random.shuffle(self.img_label)
-            # write logic for the data if it is test data
+
+    def load_filelists(self, filelists):
+        json_dict = json.load(open(filelists[1]))
+        json_dict_keys = list(json_dict.keys())
+        if self.type_train == "train":
+            for k in json_dict_keys[:int(len(json_dict_keys) * 85/100)]:
+                p_ = os.path.join(self.base_dir, k.replace("Data", "crop"))
+                for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
+                    if (p_.split("/")[-1]).split(".")[0] in f:
+                        self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
+        elif self.type_train == "val":
+            for k in json_dict_keys[int(len(json_dict_keys) * 85/100):]:
+                p_ = os.path.join(self.base_dir, k.replace("Data", "crop"))
+                for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
+                    if (p_.split("/")[-1]).split(".")[0] in f:
+                        self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
+        elif self.type_train == "test":
+            for k in json_dict_keys:
+                p_ = os.path.join(self.base_dir, k.replace("Data", "crop"))
+                for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
+                    if (p_.split("/")[-1]).split(".")[0] in f:
+                        self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
+        else:
+            raise Exception("No available data type")
+
 
     def __getitem__(self, index):  # 第二步装载数据，返回[img,label]
         if self.test == False:
