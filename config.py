@@ -52,8 +52,12 @@ class DefaultConfig(object):
 
     protoPath = os.path.join(base_dir, "awesome_celeb/crop_model/deploy.prototxt") 
     modelPath = os.path.join(base_dir, "awesome_celeb/crop_model/res10_300x300_ssd_iter_140000.caffemodel")
+    yolo_config_path = os.path.join(base_dir, "awesome_celeb/crop_model/yolo-face-500k.cfg")
+    yolo_weights_path = os.path.join(base_dir, "awesome_celeb/crop_model/yolo-face-500k.weights")
     IMG_WIDTH = 300
     IMG_HEIGHT = 300
+    YOLO_IMG_WIDTH = 320
+    YOLO_IMG_HEIGHT = 320
     # load_model_path = 'checkpoints/model.pth' # 加载预训练的模型的路径，为None代表不加载
     load_model_path = None  # 加载预训练的模型的路径，为None代表不加载
 
