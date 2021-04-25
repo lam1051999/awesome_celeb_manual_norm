@@ -69,6 +69,7 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 - Xem kết quả trên tập test: `cat result/test.txt`
 
 ## Inference
+Trước tiên trong các file `inference.py`, `video_inference.py`, `webcam_inference.py` này, ta phải sửa đường dẫn đến checkpoints của model chúng ta
 - Chạy image inference: `python inference.py inference --image="path_to_image"`, đầu ra ảnh sau inference cũng chính ở trong folder ảnh được chạy inference, với tên ảnh đầu ra được thêm cụm `evaluated`.
 - Chạy video inference: `python video_inference.py video_inference --video="path_to_video"`
 - Chạy webcam inference: `python webcam_inference.py webcam_inference`
