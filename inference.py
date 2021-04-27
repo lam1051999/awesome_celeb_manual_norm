@@ -71,7 +71,9 @@ import math
 #     fopen.close()
 
 def inference(**kwargs):
-    path = kwargs["image"]
+    images = kwargs["images"]
+    crop_threshold = kwargs["crop_threshold"]
+    spoof_threshold = kwargs["spoof_threshold"]
 
     YOLO_IMG_WIDTH = opt.YOLO_IMG_WIDTH
     YOLO_IMG_HEIGHT = opt.YOLO_IMG_HEIGHT
@@ -86,12 +88,12 @@ def inference(**kwargs):
   
     # load crop model
     
-    color = (255, 0, 0)
-    thickness = 2
+    color = (0, 0, 255)
+    thickness = 3
     font = cv2.FONT_HERSHEY_SIMPLEX
-    fontScale = 1
+    fontScale = 3
     # load model
-    pths = glob.glob('checkpoints/%s/*.pth' % (opt.model))
+    pths = glob.glob('checkpoints-photo-celeb/%s/*.pth' % (opt.model))
     pths.sort(key=os.path.getmtime, reverse=True)
     print(pths)
 
@@ -103,41 +105,49 @@ def inference(**kwargs):
     if opt.use_gpu:
         model.cuda()
     model.train(False)
-    fopen = open('result/inference.txt', 'w')
 
-    im = cv2.imread(path)
-    (h, w) = im.shape[:2]
-    classes, scores, boxes = model_yolo.detect(im, CONFIDENCE_THRESHOLD, NMS_THRESHOLD)
+    count = 0
+    for image in os.listdir(images):
+        if image.split(".")[-1] == "jpg" or image.split(".")[-1] == "png" or image.split(".")[-1] == "jpeg" or image.split(".")[-1] == "JPG" or image.split(".")[-1] == "PNG" or image.split(".")[-1] == "JPEG":
+            path = os.path.join(images, image)
+            im = cv2.imread(path)
+            (h, w) = im.shape[:2]
+            if h < 800 or w < 800:
+                fontScale = 1
+                thickness = 1
+            classes, scores, boxes = model_yolo.detect(im, CONFIDENCE_THRESHOLD, NMS_THRESHOLD)
 
-    for (classid, score, box) in zip(classes, scores, boxes):
-        if score >= 0.5:
-            (startX, startY, endX, endY) = (box[0], box[1], box[0] + box[2], box[1] + box[3])
-            if startX <= w and endX <= w and startY <= h and endY <= h:
-                (startX, startY, endX, endY) = (startX - PADDING, startY - PADDING, endX + PADDING, endY + PADDING)
-                if startX < 0:
-                    startX = 0
-                if startY < 0:
-                    startY = 0
-                face = im[startY:endY, startX:endX]
+            for (classid, score, box) in zip(classes, scores, boxes):
+                if score >= float(crop_threshold):
+                    (startX, startY, endX, endY) = (box[0], box[1], box[0] + box[2], box[1] + box[3])
+                    if startX <= w and endX <= w and startY <= h and endY <= h:
+                        (startX, startY, endX, endY) = (startX - PADDING, startY - PADDING, endX + PADDING, endY + PADDING)
+                        if startX < 0:
+                            startX = 0
+                        if startY < 0:
+                            startY = 0
+                        face = im[startY:endY, startX:endX]
 
-                if 0 not in face.shape:
-                    face = cv2.resize(face, (224, 224))
-                    face = np.transpose(np.array(face, dtype=np.float32), (2, 0, 1))
-                    face = face[np.newaxis, :]
-                    face = torch.FloatTensor(face)
-                    with torch.no_grad():
-                        if opt.use_gpu:
-                            face = face.cuda()
-                        outputs = model(face)
-                        outputs = torch.softmax(outputs, dim=-1)
-                        preds = outputs.to('cpu').numpy()
-                        attack_prob = preds[:, opt.ATTACK]
-                        im = cv2.putText(im, "Spoof {:.2f}".format(sum(attack_prob)), (startX - 5 if startX - 5 > 0 else startX + 5, startY - 5 if startY - 5 > 0 else startY + 5), font, fontScale, color, thickness, cv2.LINE_AA)
-                        im = cv2.rectangle(im, (startX, startY), (endX, endY), color, thickness)
-                        cv2.imwrite(path.split(".")[0]+"_evaluated." + path.split(".")[1], im)
-                        print('Inference %s attack_prob=%f' % (path, attack_prob), file=fopen)
+                        if 0 not in face.shape:
+                            face = cv2.resize(face, (224, 224))
+                            face = np.transpose(np.array(face, dtype=np.float32), (2, 0, 1))
+                            face = face[np.newaxis, :]
+                            face = torch.FloatTensor(face)
+                            with torch.no_grad():
+                                if opt.use_gpu:
+                                    face = face.cuda()
+                                outputs = model(face)
+                                outputs = torch.softmax(outputs, dim=-1)
+                                preds = outputs.to('cpu').numpy()
+                                attack_prob = preds[:, opt.ATTACK]
+                                if sum(attack_prob) >= float(spoof_threshold):
+                                    count += 1
+                                im = cv2.putText(im, "Spoof {:.2f}".format(sum(attack_prob)), (startX - 5 if startX - 5 > 0 else startX + 5, startY - 5 if startY - 5 > 0 else startY + 5), font, fontScale, color, thickness, cv2.LINE_AA)
+                                im = cv2.rectangle(im, (startX, startY), (endX, endY), color, thickness)
+                                cv2.imwrite(path.split(".")[0]+"_evaluated." + path.split(".")[1], im)
 
-    fopen.close()
+    print("Number of spoof faces in the images in {} is: {}".format(images, count))
+
 
 if __name__ == '__main__':
     import fire
