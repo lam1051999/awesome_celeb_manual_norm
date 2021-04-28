@@ -46,9 +46,11 @@ def make_crop_each_yolo(filelists):
                     if count == 0:
                         cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
                 except Exception as e:
+                    print("Depth 1")
                     try:
                         cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
                     except Exception as e1:
+                        print("Depth 2")
                         check_path_exist(opt.make_crop_our_broken_images)
                         with open(os.path.join(opt.make_crop_our_broken_images, "broken.txt"), "a") as file_object:
                             file_object.write(im_p + "\n")

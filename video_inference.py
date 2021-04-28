@@ -139,7 +139,8 @@ def video_inference(**kwargs):
                     face = im[startY:endY, startX:endX]
                     if 0 not in face.shape:
                         im = cv2.rectangle(im, (startX, startY), (endX, endY), color, thickness)
-                        face = cv2.resize(face, (224, 224))
+                        face = cv2.resize(face, (opt.image_size, opt.image_size))
+                        face = face/255
                         face = np.transpose(np.array(face, dtype=np.float32), (2, 0, 1))
                         face = face[np.newaxis, :]
                         face = torch.FloatTensor(face)
