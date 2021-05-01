@@ -13,6 +13,10 @@ import glob
 import time
 
 from retinaface import RetinaFace
+import reprlib
+
+r = reprlib.Repr()
+r.maxstring = 500
 
 type_dir = sys.argv[1]
 
@@ -175,9 +179,13 @@ def make_crop_each_insight(filelists):
                     if count == 0:
                         cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
                 except Exception as e:
+                    print("IF YOU SEE THIS LINE LIKE 1000 TIMES OR ABOVE, PLEASE STOP THE CODE. THERE MIGHT BE SOME PROBLEMS WITH GPU MEMORY, PLEASE CHECK THOSE")
+                    print(r.repr(str(e)))
                     try:
                         cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
                     except Exception as e1:
+                        print("IF YOU SEE THIS LINE LIKE 1000 TIMES OR ABOVE, PLEASE STOP THE CODE. THERE MIGHT BE SOME PROBLEMS WITH GPU MEMORY, PLEASE CHECK THOSE")
+                        print(r.repr(str(e1)))
                         check_path_exist(opt.make_crop_our_broken_images)
                         with open(os.path.join(opt.make_crop_our_broken_images, "broken.txt"), "a") as file_object:
                             file_object.write(im_p + "\n")
