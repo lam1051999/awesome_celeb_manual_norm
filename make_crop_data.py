@@ -136,6 +136,7 @@ type_dir = sys.argv[1]
 
 def make_crop_each_insight(filelists):
     json_dict = json.load(open(filelists[1]))
+    temp_dict = {}
     for k in tqdm(json_dict.keys()):
         im_p = os.path.join(filelists[0], k)
         if os.path.exists(im_p):
@@ -175,34 +176,47 @@ def make_crop_each_insight(filelists):
                             crop_face = im[startY:endY, startX:endX]
                             count += 1
                             cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_{}.{}".format(partitions[0], count, partitions[1]).replace("Data", "crop")), crop_face)
+                    if count > 0:
+                        temp_dict[k] = json_dict[k]
 
                     if count == 0:
-                        cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
+                        # cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
+                        pass
                 except Exception as e:
-                    print("IF YOU SEE THIS LINE LIKE 1000 TIMES OR ABOVE, PLEASE STOP THE CODE. THERE MIGHT BE SOME PROBLEMS WITH GPU MEMORY, PLEASE CHECK THOSE")
+                    # print("IF YOU SEE THIS LINE LIKE 1000 TIMES OR ABOVE, PLEASE STOP THE CODE. THERE MIGHT BE SOME PROBLEMS WITH GPU MEMORY, PLEASE CHECK THOSE")
                     print(r.repr(str(e)))
-                    try:
-                        cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
-                    except Exception as e1:
-                        print("IF YOU SEE THIS LINE LIKE 1000 TIMES OR ABOVE, PLEASE STOP THE CODE. THERE MIGHT BE SOME PROBLEMS WITH GPU MEMORY, PLEASE CHECK THOSE")
-                        print(r.repr(str(e1)))
-                        check_path_exist(opt.make_crop_our_broken_images)
-                        with open(os.path.join(opt.make_crop_our_broken_images, "broken.txt"), "a") as file_object:
-                            file_object.write(im_p + "\n")
-                        if "train" in im_p:
-                            if "spoof" in im_p:
-                                im_temp = cv2.imread(os.path.join(opt.our_train_temp_images, "spoof.jpg"))
-                                cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
-                            else:
-                                im_temp = cv2.imread(os.path.join(opt.our_train_temp_images, "live.jpeg"))
-                                cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
-                        else:
-                            if "spoof" in im_p:
-                                im_temp = cv2.imread(os.path.join(opt.our_test_temp_images, "spoof.jpg"))
-                                cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
-                            else:
-                                im_temp = cv2.imread(os.path.join(opt.our_test_temp_images, "live.jpeg"))
-                                cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
+                    check_path_exist(opt.make_crop_our_broken_images)
+                    with open(os.path.join(opt.make_crop_our_broken_images, "broken.txt"), "a") as file_object:
+                        file_object.write(im_p + "\n")
+                    pass
+                    # try:
+                    #     cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im)
+                    # except Exception as e1:
+                    #     print("IF YOU SEE THIS LINE LIKE 1000 TIMES OR ABOVE, PLEASE STOP THE CODE. THERE MIGHT BE SOME PROBLEMS WITH GPU MEMORY, PLEASE CHECK THOSE")
+                    #     print(r.repr(str(e1)))
+                    #     check_path_exist(opt.make_crop_our_broken_images)
+                    #     with open(os.path.join(opt.make_crop_our_broken_images, "broken.txt"), "a") as file_object:
+                    #         file_object.write(im_p + "\n")
+                    #     if "train" in im_p:
+                    #         if "spoof" in im_p:
+                    #             im_temp = cv2.imread(os.path.join(opt.our_train_temp_images, "spoof.jpg"))
+                    #             cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
+                    #         else:
+                    #             im_temp = cv2.imread(os.path.join(opt.our_train_temp_images, "live.jpeg"))
+                    #             cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
+                    #     else:
+                    #         if "spoof" in im_p:
+                    #             im_temp = cv2.imread(os.path.join(opt.our_test_temp_images, "spoof.jpg"))
+                    #             cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
+                    #         else:
+                    #             im_temp = cv2.imread(os.path.join(opt.our_test_temp_images, "live.jpeg"))
+                    #             cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop")), im_temp)
+
+    if temp_dict:
+        with open(filelists[1], 'w') as outfile:
+            json.dump(temp_dict, outfile)
+        
+    
 
 def make_crop(filelists, data_filelists):
     # celeb

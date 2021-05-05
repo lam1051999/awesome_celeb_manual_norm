@@ -46,7 +46,7 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 - Tập test: nếu ảnh bị lỗi, không đọc được, được thay bằng ảnh `/our_test_temp/live.jpeg` với live example, `/our_test_temp/spoof.jpg` với spoof example.
 - Cắt ảnh train: `python make_crop_data.py train`
 - Cắt ảnh test: `python make_crop_data.py test`
-- **Đặc biệt chú ý:** khi chạy code, nếu terminal print `IF YOU SEE THIS LINE LIKE 1000 TIMES OR ABOVE, PLEASE STOP THE CODE. THERE MIGHT BE SOME PROBLEMS WITH GPU MEMORY, PLEASE CHECK THOSE` quá nhiều lần và các dòng print khác có nhắc đến vấn đề out of memory của GPU, hãy dừng code.
+- **Đặc biệt chú ý:** khi chạy code, nếu các dòng print có nhắc đến vấn đề out of memory của GPU, hãy dừng code.
 
 ## Huấn luyện
 - Có thể chỉnh sửa một số thông số trong **config.py**, chọn mạng backbone, batchsize, epoch,...
