@@ -7,7 +7,7 @@ from config import opt
 
 def main():
     # Paths
-    data_path = os.path.join(opt.print_root, 'Data')
+    data_path = os.path.join(opt.replay_root, 'Data')
     train_path = os.path.join(data_path, 'train')
     test_path = os.path.join(data_path, 'test')
 
@@ -26,13 +26,13 @@ def main():
     train_dict = extract_sub_images(train_json, imgs_train)
     test_dict = extract_sub_images(test_json, imgs_test)
     
-    check_path_exist(opt.intra_test_photo_temp)
+    check_path_exist(opt.intra_test_replay_temp)
 
-    with open(os.path.join(opt.intra_test_photo_temp, 'train_label.json'), 'w') as outfile:
+    with open(os.path.join(opt.intra_test_replay_temp, 'train_label.json'), 'w') as outfile:
         json.dump(train_dict, outfile)
 
     
-    with open(os.path.join(opt.intra_test_photo_temp, 'test_label.json'), 'w') as outfile:
+    with open(os.path.join(opt.intra_test_replay_temp, 'test_label.json'), 'w') as outfile:
         json.dump(test_dict, outfile)
 
 

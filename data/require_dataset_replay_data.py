@@ -14,7 +14,7 @@ import cv2
 from config import opt
 from EDABK_utils import check_path_exist
 
-class mergedData(torch.utils.data.Dataset):
+class mergedReplayData(torch.utils.data.Dataset):
 
     def __init__(self, filelists="", data_filelists="", image_size=224, transform=None, test=False, data_source=None, type_train="train", base_dir=""):
         self.transform = transform
@@ -27,7 +27,7 @@ class mergedData(torch.utils.data.Dataset):
 
         if self.test == False:
             self.load_filelists(filelists)
-            self.load_filelists(data_filelists)
+            # self.load_filelists(data_filelists)
 
         random.shuffle(self.img_label)
 
@@ -37,21 +37,21 @@ class mergedData(torch.utils.data.Dataset):
         json_dict_keys.sort()
         if self.type_train == "train":
             for k in json_dict_keys[:int(len(json_dict_keys) * 85/100)]:
-                p_ = os.path.join(self.base_dir, k.replace("Data", "photo_crop"))
+                p_ = os.path.join(self.base_dir, k.replace("Data", "replay_crop"))
                 if os.path.exists(p_[:len(p_) - len(p_.split("/")[-1])]):
                     for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
                         if (p_.split("/")[-1]).split(".")[0] in f:
                             self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
         elif self.type_train == "val":
             for k in json_dict_keys[int(len(json_dict_keys) * 85/100):]:
-                p_ = os.path.join(self.base_dir, k.replace("Data", "photo_crop"))
+                p_ = os.path.join(self.base_dir, k.replace("Data", "replay_crop"))
                 if os.path.exists(p_[:len(p_) - len(p_.split("/")[-1])]):
                     for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
                         if (p_.split("/")[-1]).split(".")[0] in f:
                             self.img_label.append({'path': p_[:len(p_) - len(p_.split("/")[-1])] + f, 'class': json_dict[k][-1]})
         elif self.type_train == "test":
             for k in json_dict_keys:
-                p_ = os.path.join(self.base_dir, k.replace("Data", "photo_crop"))
+                p_ = os.path.join(self.base_dir, k.replace("Data", "replay_crop"))
                 if os.path.exists(p_[:len(p_) - len(p_.split("/")[-1])]):
                     for f in os.listdir(p_[:len(p_) - len(p_.split("/")[-1])]):
                         if (p_.split("/")[-1]).split(".")[0] in f:

@@ -11,6 +11,7 @@ class DefaultConfig(object):
 
     NUMBER_OF_LIVE_SAMPLES_TRAIN = 3000
     NUMBER_OF_LIVE_SAMPLES_TEST = 1000
+
     GET_ALL_CELEB_PHOTO = False
     NUMBER_OF_PHOTO_TRAIN = 1500
     NUMBER_OF_PHOTO_TEST = 500
@@ -19,10 +20,23 @@ class DefaultConfig(object):
     NUMBER_OF_A4_TRAIN = 1500
     NUMBER_OF_A4_TEST = 500
 
+    GET_ALL_CELEB_REPLAY = False
+    NUMBER_OF_PC_TRAIN = 1500
+    NUMBER_OF_PC_TEST = 500
+    NUMBER_OF_PAD_TRAIN = 1500
+    NUMBER_OF_PAD_TEST = 500
+    NUMBER_OF_PHONE_TRAIN = 1500
+    NUMBER_OF_PHONE_TEST = 500
+
     root = "/home/tranlam/Downloads/celeb/CelebA_Spoof/"
     base_dir = "/media/tranlam/Data_Storage/AI/Liveness/complete/"
+
     print_root = os.path.join(base_dir, "photo_celeb/CelebA_Spoof/") 
-    intra_test_temp = os.path.join(base_dir, "metas/intra_test/")
+    replay_root = os.path.join(base_dir, "replay_celeb/CelebA_Spoof/")
+
+    intra_test_photo_temp = os.path.join(print_root, "metas/intra_test/")
+    intra_test_replay_temp = os.path.join(replay_root, "metas/intra_test/")
+    
     our_data = os.path.join(base_dir, "our_data/")
     our_label = os.path.join(our_data, "label/")
 
@@ -37,10 +51,17 @@ class DefaultConfig(object):
     our_test_temp_images = os.path.join(base_dir, "awesome_celeb/our_test_temp/")
 
     celeb_train_filelists = [
-        print_root, os.path.join(intra_test_temp, "train_label.json")
+        print_root, os.path.join(intra_test_photo_temp, "train_label.json")
     ]
     celeb_test_filelists = [
-        print_root, os.path.join(intra_test_temp, "test_label.json")
+        print_root, os.path.join(intra_test_photo_temp, "test_label.json")
+    ]
+
+    celeb_replay_train_filelists = [
+        replay_root, os.path.join(intra_test_replay_temp, "train_label.json")
+    ]
+    celeb_replay_test_filelists = [
+        replay_root, os.path.join(intra_test_replay_temp, "test_label.json")
     ]
 
     data_train_filelists = [

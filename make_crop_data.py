@@ -142,9 +142,9 @@ def make_crop_each_insight(filelists):
         if os.path.exists(im_p):
             partitions = k.split(".")
             x = partitions[0]+"_crop." + partitions[1]
-            x = x.replace("Data", "crop")
+            x = x.replace("Data", "photo_crop")
             x = os.path.join(opt.base_dir, x)
-            if not os.path.exists(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "crop"))):
+            if not os.path.exists(os.path.join(opt.base_dir, "{}_crop_1.{}".format(partitions[0], partitions[1]).replace("Data", "photo_crop"))):
                 if not os.path.exists(x[:len(x) - len(x.split("/")[-1])]):
                     os.makedirs(x[:len(x) - len(x.split("/")[-1])])
                 try:
@@ -175,7 +175,7 @@ def make_crop_each_insight(filelists):
                             endY = min(endY, im_shape[0])
                             crop_face = im[startY:endY, startX:endX]
                             count += 1
-                            cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_{}.{}".format(partitions[0], count, partitions[1]).replace("Data", "crop")), crop_face)
+                            cv2.imwrite(os.path.join(opt.base_dir, "{}_crop_{}.{}".format(partitions[0], count, partitions[1]).replace("Data", "photo_crop")), crop_face)
                     if count > 0:
                         temp_dict[k] = json_dict[k]
 

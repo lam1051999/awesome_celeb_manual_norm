@@ -33,11 +33,22 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 Để chạy trích xuất ảnh, ta thực hiện các bước
 - Thứ nhất, vì lượng dữ liệu hiện có của ta còn ít, nên ta có thể cân nhắc lấy hết hoặc chỉ lấy một phần của CelebA-Spoof
     - Vào **config.py**, sửa các biến `GET_ALL_CELEB_PHOTO` thể hiện cho việc có lấy tất cả dữ liệu photo hay không, nếu không, cần phải sửa các biến `NUMBER_OF_PHOTO_TRAIN`, `NUMBER_OF_PHOTO_TEST`, `NUMBER_OF_POSTER_TRAIN`, `NUMBER_OF_POSTER_TEST`, `NUMBER_OF_A4_TRAIN`, `NUMBER_OF_A4_TEST` thể hiện lượng ảnh photo mà ta muốn lấy ở CelebA-Spoof.
-    - Chạy `python EDABK_extract_from_celeb.py` để trích xuất ảnh photo, poster, a4 từ CelebA-Spoof.
+    - Chạy `python EDABK_extract_photo_celeb.py` để trích xuất ảnh photo, poster, a4 từ CelebA-Spoof.
 - Thứ hai: sau khi chạy lệnh thứ nhất, ta có được tổng số ảnh photo, poster, A4 lấy từ celeb, khi này, ta sẽ mong muốn lấy một lượng ảnh live từ celeb tùy vào lượng ảnh spoof đã lấy được từ bước thứ nhất. Muốn lấy ảnh live từ celeb, thực hiện lần lượt các bước sau:
     - Vào **config.py**, sửa các biến `NUMBER_OF_LIVE_SAMPLES_TRAIN` là số ảnh live muốn lấy để train và `NUMBER_OF_LIVE_SAMPLES_TEST` là số ảnh live muốn lấy để test.
     - Chạy `python EDABK_get_live_samples.py` để lấy ảnh live.  
-- Thứ hai: chạy `python EDABK_custom_data.py` để lấy label cho tập ảnh photo đã trích xuất.
+- Thứ ba: chạy `python EDABK_custom_data.py` để lấy label cho tập ảnh photo đã trích xuất.
+
+*----------------REPLAY----------------*
+
+Để chạy trích xuất ảnh, ta thực hiện các bước
+- Thứ nhất, vì lượng dữ liệu hiện có của ta còn ít, nên ta có thể cân nhắc lấy hết hoặc chỉ lấy một phần của CelebA-Spoof
+    - Vào **config.py**, sửa các biến `GET_ALL_CELEB_REPLAY` thể hiện cho việc có lấy tất cả dữ liệu replay hay không, nếu không, cần phải sửa các biến `NUMBER_OF_PC_TRAIN`, `NUMBER_OF_PC_TEST`, `NUMBER_OF_PAD_TRAIN`, `NUMBER_OF_PAD_TEST`, `NUMBER_OF_PHONE_TRAIN`, `NUMBER_OF_PHONE_TEST` thể hiện lượng ảnh replay mà ta muốn lấy ở CelebA-Spoof.
+    - Chạy `python EDABK_extract_replay_celeb.py` để trích xuất ảnh PC, Pad, Phone từ CelebA-Spoof.
+- Thứ hai: sau khi chạy lệnh thứ nhất, ta có được tổng số ảnh PC, Pad, Phone lấy từ celeb, khi này, ta sẽ mong muốn lấy một lượng ảnh live từ celeb tùy vào lượng ảnh spoof đã lấy được từ bước thứ nhất. Muốn lấy ảnh live từ celeb, thực hiện lần lượt các bước sau:
+    - Vào **config.py**, sửa các biến `NUMBER_OF_LIVE_SAMPLES_TRAIN` là số ảnh live muốn lấy để train và `NUMBER_OF_LIVE_SAMPLES_TEST` là số ảnh live muốn lấy để test.
+    - Chạy `python EDABK_get_live_samples.py` để lấy ảnh live.  
+- Thứ ba: chạy `python EDABK_custom_replay.py` để lấy label cho tập ảnh photo đã trích xuất.
 
 ## Tiền xử lý ảnh (cắt ảnh)
 - Tại folder code, gõ `make` để compile các file cần thiết.
@@ -48,12 +59,26 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 - Cắt ảnh test: `python make_crop_data.py test`
 - **Đặc biệt chú ý:** khi chạy code, nếu các dòng print có nhắc đến vấn đề out of memory của GPU, hãy dừng code.
 
+*----------------REPLAY----------------*
+
+- Cắt ảnh train: `python make_crop_data_replay.py train`
+- Cắt ảnh test: `python make_crop_data_replay.py test`
+- **Đặc biệt chú ý:** khi chạy code, nếu các dòng print có nhắc đến vấn đề out of memory của GPU, hãy dừng code.
+
 ## Huấn luyện
 - Có thể chỉnh sửa một số thông số trong **config.py**, chọn mạng backbone, batchsize, epoch,...
 - Để huấn luyện mạng: `python main.py train`
 
+*----------------REPLAY----------------*
+
+- Để huấn luyện mạng: `python main_replay.py train`
+
 ## Kiểm thử
 - Để kiếm thử mạng: `python main.py test`
+
+*----------------REPLAY----------------*
+
+- Để kiếm thử mạng: `python main_replay.py test`
 
 ## Xem lượng ảnh đã bị thay thế bằng 1 ảnh cứng nếu một số ảnh trong tập dữ liệu bị lỗi
 - Sau khi chạy các thứ xong xuôi, ta xem danh sách các ảnh lỗi trong tập dữ liệu đã được thay bằng ảnh cứng
