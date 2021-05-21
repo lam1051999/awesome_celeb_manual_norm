@@ -5,7 +5,7 @@ import models
 from data import myDataCrop
 from data import ourData
 from data import mergedReplayData
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, ConcatDataset
 from torch.autograd import Variable
 from torchnet import meter
 from utils import Visualizer
@@ -42,34 +42,41 @@ def maxcrop(img):
     return img
 
 
-'''
-
 data_transforms = {
 	'train' : transforms.Compose([
 		#transforms.RandomRotation((45)),
-		transforms.RandomHorizontalFlip(),
-		#transforms.RandomVerticalFlip(),
+		# transforms.RandomHorizontalFlip(),
+		# transforms.RandomVerticalFlip(),
 		#transforms.Lambda(maxcrop),
 		#transforms.Lambda(blur),
 		transforms.Resize((224,224)) ,
-	   	transforms.ToTensor() ,
+	   	transforms.ToTensor(),
 		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
 	]) ,
+    'train_aug': transforms.Compose([
+		#transforms.RandomRotation((45)),
+		# transforms.RandomHorizontalFlip(),
+		transforms.RandomVerticalFlip(),
+		#transforms.Lambda(maxcrop),
+		#transforms.Lambda(blur),
+		transforms.Resize((224,224)) ,
+	   	transforms.ToTensor(),
+		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
+    ]),
 	'val' : transforms.Compose([
 		#transforms.Lambda(maxcrop),
-		transforms.Resize((224,224)) ,
+		transforms.Resize((224,224)),
 		#transforms.RandomHorizontalFlip(),
-		transforms.ToTensor() ,
+		transforms.ToTensor(),
 		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
 	]),
 	'test' : transforms.Compose([
 		#transforms.Lambda(maxcrop),
 		transforms.Resize((224,224)) ,
 		#transforms.RandomHorizontalFlip(),
-		transforms.ToTensor() ,
+		transforms.ToTensor(),
 		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
 	]) ,}
-'''
 
 
 def train(**kwargs):
@@ -95,10 +102,15 @@ def train(**kwargs):
     check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/result"))
     check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/checkpoints"))
     # step2: 数据
-    train_data = mergedReplayData(filelists=opt.celeb_replay_train_filelists, transform=None,
+    train_data = mergedReplayData(filelists=opt.celeb_replay_train_filelists, transform=data_transforms["train"],
                             test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
-    val_data = mergedReplayData(filelists=opt.celeb_replay_train_filelists, transform=None,
+    val_data = mergedReplayData(filelists=opt.celeb_replay_train_filelists, transform=data_transforms["val"],
                           test=False, data_source=None, type_train="val", base_dir=opt.base_dir)
+
+    train_data_aug = mergedReplayData(filelists=opt.celeb_replay_train_filelists, transform=data_transforms["train_aug"],
+                            test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
+
+    train_data = ConcatDataset([train_data, train_data_aug])
 
     train_loader = DataLoader(dataset=train_data,
                               batch_size=opt.batch_size, shuffle=True)
@@ -143,12 +155,17 @@ def train(**kwargs):
         for step, batch in enumerate(tqdm(train_loader, desc='Train %s On Anti-spoofing' % (opt.model), unit='batch')):
             inputs, labels = batch
 
+            # if opt.use_gpu:
+            #     inputs = Variable(inputs.cuda())
+            #     labels = Variable(labels.cuda())
+            # else:
+            #     inputs = Variable(inputs)
+            #     lables = Variable(labels)
+
             if opt.use_gpu:
-                inputs = Variable(inputs.cuda())
-                labels = Variable(labels.cuda())
-            else:
-                inputs = Variable(inputs)
-                lables = Variable(labels)
+                inputs = inputs.cuda()
+                labels = labels.cuda()
+
             optimizer.zero_grad()  # zero the parameter gradients
             with torch.set_grad_enabled(True):
                 outputs = model(inputs)
@@ -211,27 +228,32 @@ def val(model, dataloader, data_len):
     label_list = []
     for ii, data in enumerate(tqdm(dataloader, desc='Val %s On Anti-spoofing' % (opt.model), unit='batch')):
         input, label = data
-        with torch.no_grad():
-            val_input = Variable(input)
-            val_label = Variable(label)
+        # with torch.no_grad():
+        #     val_input = Variable(input)
+        #     val_label = Variable(label)
+        # if opt.use_gpu:
+        #     val_input = val_input.cuda()
+        #     val_label = val_label.cuda()
+
         if opt.use_gpu:
-            val_input = val_input.cuda()
-            val_label = val_label.cuda()
-        score = model(val_input)
+            input = input.cuda()
+            label = label.cuda()
+
+        score = model(input)
         _, preds = torch.max(score, 1)
-        loss = criterion(score, val_label)
-        if val_label.shape[0] == 1:
-            confusion_matrix.add(score.data.squeeze().reshape(1, score.data.squeeze().shape[0]), val_label)
+        loss = criterion(score, label)
+        if label.shape[0] == 1:
+            confusion_matrix.add(score.data.squeeze().reshape(1, score.data.squeeze().shape[0]), label)
         else:
-            confusion_matrix.add(score.data.squeeze(), val_label)
-        running_loss += loss.item() * val_input.size(0)
-        running_corrects += torch.sum(preds == val_label.data)
+            confusion_matrix.add(score.data.squeeze(), label)
+        running_loss += loss.item() * input.size(0)
+        running_corrects += torch.sum(preds == label.data)
 
         outputs = torch.softmax(score, dim=-1)
         preds = outputs.to('cpu').detach().numpy()
         for i_batch in range(preds.shape[0]):
             result_list.append(preds[i_batch, 1])
-            label_list.append(label[i_batch])
+            label_list.append(label[i_batch].item())
     # 把模型恢复为训练模式
     model.train(True)
 
@@ -265,7 +287,7 @@ def test(**kwargs):
     # 		transform =None,
     #                       scale = opt.cropscale,
     # 		test = True,data_source = 'none')
-    test_data = mergedReplayData(filelists=opt.celeb_replay_test_filelists, transform=None,
+    test_data = mergedReplayData(filelists=opt.celeb_replay_test_filelists, transform=data_transforms["test"],
                            test=False, data_source=None, type_train="test", base_dir=opt.base_dir)
   #	test_data = myData(root = opt.test_roo,datatxt='test.txt',
   #				test = True,transform = data_transforms['test'])
@@ -287,7 +309,7 @@ def test(**kwargs):
             preds = outputs.to('cpu').numpy()
             for i in range(preds.shape[0]):
                 result_list.append(preds[i, 1])
-                label_list.append(label[i])
+                label_list.append(label[i].item())
     metric = roc.cal_metric(label_list, result_list)
     eer = metric[0]
     tprs = metric[1]

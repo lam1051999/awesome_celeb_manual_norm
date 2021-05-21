@@ -66,11 +66,10 @@ class mergedReplayData(torch.utils.data.Dataset):
             label = self.img_label[index]['class']
             try:
                 img = cv2.imread(image_path)
-                img = cv2.resize(img, (self.image_size, self.image_size))
-                img = img/255.0
+                img = Image.fromarray(img)
                 if self.transform is not None:
                     img = self.transform(img)
-                return np.transpose(np.array(img, dtype=np.float32), (2, 0, 1)), int(label)
+                return img, int(label)
 
             except Exception as e:
                 # get broken images

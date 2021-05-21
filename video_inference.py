@@ -4,6 +4,8 @@ import models
 from tqdm import tqdm
 import torch
 from torchsummary import summary
+from torchvision import transforms
+from PIL import Image
 import numpy as np
 import cv2
 import glob
@@ -12,6 +14,41 @@ import sys
 
 from retinaface import RetinaFace
 
+data_transforms = {
+	'train' : transforms.Compose([
+		#transforms.RandomRotation((45)),
+		# transforms.RandomHorizontalFlip(),
+		# transforms.RandomVerticalFlip(),
+		#transforms.Lambda(maxcrop),
+		#transforms.Lambda(blur),
+		transforms.Resize((224,224)) ,
+	   	transforms.ToTensor(),
+		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
+	]) ,
+    'train_aug': transforms.Compose([
+		#transforms.RandomRotation((45)),
+		# transforms.RandomHorizontalFlip(),
+		transforms.RandomVerticalFlip(),
+		#transforms.Lambda(maxcrop),
+		#transforms.Lambda(blur),
+		transforms.Resize((224,224)) ,
+	   	transforms.ToTensor(),
+		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
+    ]),
+	'val' : transforms.Compose([
+		#transforms.Lambda(maxcrop),
+		transforms.Resize((224,224)),
+		#transforms.RandomHorizontalFlip(),
+		transforms.ToTensor(),
+		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
+	]),
+	'test' : transforms.Compose([
+		#transforms.Lambda(maxcrop),
+		transforms.Resize((224,224)) ,
+		#transforms.RandomHorizontalFlip(),
+		transforms.ToTensor(),
+		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
+	]) ,}
 
 # def video_inference(**kwargs):
 #     path = kwargs['video']
@@ -182,7 +219,7 @@ def video_inference(**kwargs):
     fontScale = 1
 
     # load model
-    pths = glob.glob('checkpoints-photo-celeb/%s/*.pth' % (opt.model))
+    pths = glob.glob('checkpoints/%s/*.pth' % (opt.model))
     pths.sort(key=os.path.getmtime, reverse=True)
     print(pths)
 
@@ -230,11 +267,16 @@ def video_inference(**kwargs):
 
                 if 0 not in crop_face.shape:
                     img = cv2.rectangle(img, (startX, startY), (endX, endY), color, thickness)
-                    crop_face = cv2.resize(crop_face, (opt.image_size, opt.image_size))
-                    crop_face = crop_face/255
-                    crop_face = np.transpose(np.array(crop_face, dtype=np.float32), (2, 0, 1))
-                    crop_face = crop_face[np.newaxis, :]
-                    crop_face = torch.FloatTensor(crop_face)
+                    # crop_face = cv2.resize(crop_face, (opt.image_size, opt.image_size))
+                    # crop_face = crop_face/255
+                    # crop_face = np.transpose(np.array(crop_face, dtype=np.float32), (2, 0, 1))
+                    # crop_face = crop_face[np.newaxis, :]
+                    # crop_face = torch.FloatTensor(crop_face)
+
+                    crop_face = Image.fromarray(crop_face)
+                    crop_face = data_transforms["test"](crop_face)
+                    crop_face = torch.unsqueeze(crop_face, 0)
+
                     with torch.no_grad():
                         if opt.use_gpu:
                             crop_face = crop_face.cuda()

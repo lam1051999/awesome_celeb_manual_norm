@@ -98,6 +98,6 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 
 ## Inference
 Trước tiên trong các file `inference.py`, `video_inference.py`, `webcam_inference.py` này, ta phải sửa đường dẫn đến checkpoints của model chúng ta
-- Chạy image inference: `python inference.py inference --images="path_to_images_folder" --spoof_threshold=0.5`, đầu ra ảnh sau inference cũng chính ở trong folder ảnh được chạy inference, với tên ảnh đầu ra được thêm cụm `evaluated`. Trong đó, `spoof_threshold` sẽ là ngưỡng mà mình quyết định mặt đó là spoof hay live. Ví dụ: `python inference.py inference --images="/media/tranlam/Data_Storage" --spoof_threshold=0.5`
+- Chạy image inference: `python inference.py inference --images="/home/tranlam/Downloads/im" --output_images="/home/tranlam/Downloads/im_out" --spoof_threshold=0.5`, đầu ra ảnh sau inference nằm trong folder `output_images`. Trong đó, `spoof_threshold` sẽ là ngưỡng mà mình quyết định mặt đó là spoof hay live. Ví dụ: `python inference.py inference --images="/home/tranlam/Downloads/im" --output_images="/home/tranlam/Downloads/im_out" --spoof_threshold=0.5`
 - Chạy video inference: `python video_inference.py video_inference --video="path_to_video"`
 - Chạy webcam inference: `python webcam_inference.py webcam_inference`

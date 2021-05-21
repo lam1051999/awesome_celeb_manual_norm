@@ -40,9 +40,18 @@ def cal_metric(groundTruth, predicted):
 #	    print(key, score)
 	if 0:
 		plt.plot(xnew, ynew)
-
+		plt.title("ROC curve")
+		plt.xlabel("FPR")
+		plt.ylabel("TPR")
 		plt.show()
 	
 	auc = roc_auc_score(groundTruth, predicted)
 
 	return eer,TPRs, auc, {'x':xnew, 'y':ynew}
+
+# ground_truth = [1, 1, 0, 0, 0, 1, 0, 0, 1, 1]
+# predicted = [0.78, 0.34, 0.1, 0.2, 0.3, 0.89, 0.2, 0.45, 0.6, 0.2]
+# eer, TPRs, auc, d = cal_metric(ground_truth, predicted)
+# print("Err: {}".format(eer))
+# print("TPRs: {}".format(TPRs))
+# print("auc: {}".format(auc))

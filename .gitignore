@@ -1,6 +1,7 @@
 __pycache__/
 .vscode/
 broken_images/
+our_broken_images/
 checkpoints/
 result/
 checkpoints_3/
