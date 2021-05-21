@@ -58,7 +58,7 @@ data_transforms = {
     'train_aug': transforms.Compose([
 		#transforms.RandomRotation((45)),
 		# transforms.RandomHorizontalFlip(),
-		transforms.RandomVerticalFlip(),
+		transforms.RandomVerticalFlip(p=1),
 		#transforms.Lambda(maxcrop),
 		#transforms.Lambda(blur),
 		transforms.Resize((224,224)) ,
