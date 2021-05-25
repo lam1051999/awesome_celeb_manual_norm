@@ -114,6 +114,8 @@ def train(**kwargs):
 
     train_data = ConcatDataset([train_data, train_data_aug])
 
+    print(len(train_data))
+    print(len(val_data))
 
     train_loader = DataLoader(dataset=train_data,
                               batch_size=opt.batch_size, shuffle=True)

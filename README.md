@@ -47,7 +47,7 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
     - Chạy `python EDABK_extract_replay_celeb.py` để trích xuất ảnh PC, Pad, Phone từ CelebA-Spoof.
 - Thứ hai: sau khi chạy lệnh thứ nhất, ta có được tổng số ảnh PC, Pad, Phone lấy từ celeb, khi này, ta sẽ mong muốn lấy một lượng ảnh live từ celeb tùy vào lượng ảnh spoof đã lấy được từ bước thứ nhất. Muốn lấy ảnh live từ celeb, thực hiện lần lượt các bước sau:
     - Vào **config.py**, sửa các biến `NUMBER_OF_LIVE_SAMPLES_TRAIN` là số ảnh live muốn lấy để train và `NUMBER_OF_LIVE_SAMPLES_TEST` là số ảnh live muốn lấy để test.
-    - Chạy `python EDABK_get_live_samples.py` để lấy ảnh live.  
+    - Chạy `python EDABK_get_live_samples_replay.py` để lấy ảnh live.  
 - Thứ ba: chạy `python EDABK_custom_replay.py` để lấy label cho tập ảnh photo đã trích xuất.
 
 ## Tiền xử lý ảnh (cắt ảnh)
