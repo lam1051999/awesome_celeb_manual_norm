@@ -229,7 +229,10 @@ class MultiscaleresNet18(BasicModule):
         
 
     def forward(self, x):
-        
+
+        # my part
+        x = [x, x, x]
+
         for i in range(3):
             x[i] = self.resnet_lay(x[i])
             x[i] = self.global_average(x[i])
@@ -243,7 +246,36 @@ class MultiscaleresNet18(BasicModule):
         output = output.view(output.size(0),-1)
         output = self.fc_Linear_lay2 (output)
 
+class MultiscaleresNet34(BasicModule):
+    def __init__(self):
+        super(MultiscaleresNet34, self).__init__()
+        model = models.resnet34(pretrained = True)
+        self.resnet_lay=nn.Sequential(*list(model.children())[:-2])
+        self.conv1_lay = nn.Conv2d(512*3, 256, kernel_size = (1,1),stride=(1,1))
+        self.relu1_lay = nn.ReLU(inplace = True)
+        self.drop_lay = nn.Dropout2d(0.5)
+        self.global_average = nn.AdaptiveAvgPool2d((1,1))
+        self.fc_Linear_lay2 = nn.Linear(256,2)
+        
 
+    def forward(self, x):
+
+        # my part
+        x = [x, x, x]
+
+        for i in range(3):
+            x[i] = self.resnet_lay(x[i])
+            x[i] = self.global_average(x[i])
+        output = [x[0],x[1],x[2]]
+        output = (torch.cat(output, 1))
+
+        output = self.conv1_lay(output)
+        output = self.relu1_lay(output)
+        output = self.drop_lay(output)
+        output= self.global_average(output)
+        output = output.view(output.size(0),-1)
+        output = self.fc_Linear_lay2 (output)
+        
 class MyresNet50(BasicModule):
     def __init__(self):
         super(MyresNet50, self).__init__()

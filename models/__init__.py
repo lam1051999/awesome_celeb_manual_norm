@@ -16,3 +16,4 @@ from .BasicModule import Myxception
 from .BasicModule import MydetNet59
 from .BasicModule import MynasNet
 from .BasicModule import MultiscaleresNet18
+from .BasicModule import MultiscaleresNet34

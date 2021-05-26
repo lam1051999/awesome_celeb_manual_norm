@@ -4,7 +4,7 @@ import warnings
 import os
 
 class DefaultConfig(object):
-    model = 'MyresNet34'  # 使用的模型，名字必须与models/__init__.py中的名字一致
+    model = 'MultiscaleresNet18'  # 使用的模型，名字必须与models/__init__.py中的名字一致
     env = model
     ATTACK = 1
     GENUINE = 0
