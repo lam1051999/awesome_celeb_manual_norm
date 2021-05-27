@@ -83,8 +83,8 @@ class DefaultConfig(object):
     load_model_path = None  # 加载预训练的模型的路径，为None代表不加载
 
     batch_size = 16  # batch size
-    # use_gpu = torch.cuda.is_available()  # use GPU or not
-    use_gpu = False  # use GPU or not
+    use_gpu = torch.cuda.is_available()  # use GPU or not
+    # use_gpu = False  # use GPU or not
     num_workers = 4  # how many workers for loading data
     print_freq = 20  # print info every N batch
     debug_file = '/tmp/debug'  # if os.path.exists(debug_file): enter ipdb
