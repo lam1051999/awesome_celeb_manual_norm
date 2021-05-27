@@ -246,6 +246,8 @@ class MultiscaleresNet18(BasicModule):
         output = output.view(output.size(0),-1)
         output = self.fc_Linear_lay2 (output)
 
+        return output
+
 class MultiscaleresNet34(BasicModule):
     def __init__(self):
         super(MultiscaleresNet34, self).__init__()
@@ -275,6 +277,8 @@ class MultiscaleresNet34(BasicModule):
         output= self.global_average(output)
         output = output.view(output.size(0),-1)
         output = self.fc_Linear_lay2 (output)
+
+        return output
         
 class MyresNet50(BasicModule):
     def __init__(self):
