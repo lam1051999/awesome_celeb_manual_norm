@@ -2,7 +2,6 @@
 from config import opt
 import os
 import models
-from data import myDataCrop
 from data import ourData
 from data import mergedData
 from torch.utils.data import DataLoader, ConcatDataset
