@@ -1,8 +1,9 @@
 # awesome_celeb
 
+## Nếu code xảy ra vấn đề gì, xin hãy raise ở phần Issues của repository này
+
 ## Data
 - CelebA-Spoof [ECCV2020] A Large-Scale Face Anti-Spoofing Dataset
-
 
 ## Thư viện
 Các thư viện được liệt trong `requirements.txt`.
