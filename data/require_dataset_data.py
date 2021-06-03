@@ -75,7 +75,7 @@ class mergedData(torch.utils.data.Dataset):
 
             except Exception as e:
                 # get broken images
-                print(e)
+                print("Exception: ", e)
                 check_path_exist(opt.rqds_crop_our_broken_images_train)
                 if self.type_train == "train" or self.type_train == "val":
                     with open(os.path.join(opt.rqds_crop_our_broken_images_train, "broken.txt"), "a") as file_object:
