@@ -2,28 +2,19 @@
 from config import opt
 import os
 import models
-from data import ourData
 from data import mergedData
 from torch.utils.data import DataLoader, ConcatDataset
-from torch.autograd import Variable
 from torchnet import meter
-from utils import Visualizer
 from tqdm import tqdm
 from torchvision import transforms
-import torchvision
 import torch
 from torchsummary import summary
-import json
 from torch.optim import lr_scheduler
 from loss import FocalLoss
 from PIL import ImageFilter
 import random
-from PIL import Image
-import matplotlib.pyplot as plt
-import numpy as np
 import pickle
 import roc
-import cv2
 from EDABK_utils import check_path_exist
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -84,24 +75,18 @@ data_transforms = {
 def train(**kwargs):
     opt.parse(kwargs)
     model = getattr(models, opt.model)()
-    '''
-    model_ft = torchvision.models.vgg16_bn(pretrained = True)
-    pretrained_dict = model_ft.state_dict()
-    model_dict = model.state_dict()
-    # 将pretrained_dict里不属于model_dict的键剔除掉
-    pretrained_dict =  {k: v for k, v in pretrained_dict.items() 
-            if k in model_dict}
-    model_dict.update(pretrained_dict)
-    model.load_state_dict(model_dict)
-    '''
     if opt.load_model_path:
         model.load(opt.load_model_path)
     if opt.use_gpu:
         model.cuda()
         summary(model, (3, 224, 224))
     print(opt)
+
+    # create result and checkpoints folder
     check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/result"))
     check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/checkpoints"))
+
+    # initialize datasets
     train_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=data_transforms["train"],
                             test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
     val_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=data_transforms["val"],
@@ -110,12 +95,13 @@ def train(**kwargs):
     train_data_aug = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=data_transforms["train_aug"],
                             test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
 
-
+    # concat original dataset with its augmentation
     train_data = ConcatDataset([train_data, train_data_aug])
 
     print(len(train_data))
     print(len(val_data))
 
+    # create dataloaders from datasets
     train_loader = DataLoader(dataset=train_data,
                               batch_size=opt.batch_size, shuffle=True)
     val_loader = DataLoader(dataset=val_data,
@@ -124,6 +110,7 @@ def train(**kwargs):
     dataloaders = {'train': train_loader, 'val': val_loader}
     dataset_sizes = {'train': len(train_data), 'val': len(val_data)}
 
+    # initialize loss, hyperparameters,...
     criterion = FocalLoss(2)
     lr = opt.lr
 
@@ -143,6 +130,7 @@ def train(**kwargs):
     previous_loss = 1e100
     best_tpr = 0.0
 
+    # training
     for epoch in range(opt.max_epoch):
         print('Epoch {}/{}'.format(epoch, opt.max_epoch - 1))
         print('-' * 10)
@@ -153,13 +141,6 @@ def train(**kwargs):
         exp_lr_scheduler.step()
         for step, batch in enumerate(tqdm(train_loader, desc='Train %s On Anti-spoofing' % (opt.model), unit='batch')):
             inputs, labels = batch
-
-            # if opt.use_gpu:
-            #     inputs = Variable(inputs.cuda())
-            #     labels = Variable(labels.cuda())
-            # else:
-            #     inputs = Variable(inputs)
-            #     lables = Variable(labels)
 
             if opt.use_gpu:
                 inputs = inputs.cuda()
@@ -187,6 +168,8 @@ def train(**kwargs):
 
         val_loss.reset()
         val_acc.reset()
+
+        # validating
         val_cm, v_loss, v_accuracy, metric = val(model, val_loader, dataset_sizes['val'])
         print('Val Loss: {:.8f} Acc: {:.4f}'.format(v_loss, v_accuracy))
         val_loss.add(v_loss)
@@ -211,7 +194,6 @@ def train(**kwargs):
 
 
 def val(model, dataloader, data_len):
-    # 把模型设为验证模式
     criterion = FocalLoss(2)
     model.train(False)
     running_loss = 0
@@ -222,13 +204,6 @@ def val(model, dataloader, data_len):
     label_list = []
     for ii, data in enumerate(tqdm(dataloader, desc='Val %s On Anti-spoofing' % (opt.model), unit='batch')):
         input, label = data
-        # with torch.no_grad():
-        #     val_input = Variable(input)
-        #     val_label = Variable(label)
-        # if opt.use_gpu:
-        #     val_input = val_input.cuda()
-        #     val_label = val_label.cuda()
-
         if opt.use_gpu:
             input = input.cuda()
             label = label.cuda()
@@ -248,8 +223,10 @@ def val(model, dataloader, data_len):
         for i_batch in range(preds.shape[0]):
             result_list.append(preds[i_batch, 1])
             label_list.append(label[i_batch].item())
-    # 把模型恢复为训练模式
+
     model.train(True)
+
+    # calculate evaluation metrics
     metric = roc.cal_metric(label_list, result_list)
     cm_value = confusion_matrix.value()
     val_loss = running_loss / data_len
@@ -263,7 +240,7 @@ def test(**kwargs):
     pths.sort(key=os.path.getmtime, reverse=True)
     print(pths)
     opt.parse(kwargs)
-    # 模型
+
     opt.load_model_path = pths[0]
     model = getattr(models, opt.model)().eval()
     assert os.path.exists(opt.load_model_path)
@@ -272,21 +249,11 @@ def test(**kwargs):
     if opt.use_gpu:
         model.cuda()
     model.train(False)
-    # 数据
-    #result_name = '../../model/se-resnet/test_se_resnet50'
-    # test_data = myData(
-    # 		filelists =opt.test_filelists,
-    # 		#transform =data_transforms['val'],
-    # 		transform =None,
-    #                       scale = opt.cropscale,
-    # 		test = True,data_source = 'none')
     test_data = mergedData(filelists=opt.celeb_test_filelists, data_filelists=opt.data_test_filelists, transform=data_transforms["test"],
                            test=False, data_source=None, type_train="test", base_dir=opt.base_dir)
-  #	test_data = myData(root = opt.test_roo,datatxt='test.txt',
-  #				test = True,transform = data_transforms['test'])
+
     test_loader = DataLoader(
         dataset=test_data, batch_size=opt.batch_size//2, shuffle=False)
-    #test_loader =DataLoader(dataset = test_data,batch_size = opt.batch_size//2,shuffle =True)
 
     result_list = []
 
@@ -313,65 +280,6 @@ def test(**kwargs):
         eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc), file=open('result/test.txt', 'a'))
     print('EER: {:.6f} TPR(1.0%): {:.6f} TPR(.5%): {:.6f} AUC: {:.8f}'.format(
         eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc))
-
-def test_our_data(**kwargs):
-    import glob
-    pths = glob.glob('checkpoints-photo-celeb/%s/*.pth' % (opt.model))
-    pths.sort(key=os.path.getmtime, reverse=True)
-    print(pths)
-    opt.parse(kwargs)
-    # 模型
-    opt.load_model_path = pths[0]
-    model = getattr(models, opt.model)().eval()
-    assert os.path.exists(opt.load_model_path)
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
-    if opt.use_gpu:
-        model.cuda()
-    model.train(False)
-    # 数据
-    #result_name = '../../model/se-resnet/test_se_resnet50'
-    # test_data = myData(
-    # 		filelists =opt.test_filelists,
-    # 		#transform =data_transforms['val'],
-    # 		transform =None,
-    #                       scale = opt.cropscale,
-    # 		test = True,data_source = 'none')
-    test_data = ourData(label="test", transform=None,
-                           test=False, data_source=None, type_train="test", our_data_path=opt.our_data)
-  #	test_data = myData(root = opt.test_roo,datatxt='test.txt',
-  #				test = True,transform = data_transforms['test'])
-    test_loader = DataLoader(
-        dataset=test_data, batch_size=opt.batch_size//2, shuffle=False)
-    #test_loader =DataLoader(dataset = test_data,batch_size = opt.batch_size//2,shuffle =True)
-
-    result_list = []
-
-    label_list = []
-
-    for step, batch in enumerate(tqdm(test_loader, desc='test %s' % (opt.model), unit='batch')):
-        data, label = batch
-        with torch.no_grad():
-            if opt.use_gpu:
-                data = data.cuda()
-            outputs = model(data)
-            outputs = torch.softmax(outputs, dim=-1)
-            preds = outputs.to('cpu').numpy()
-            for i in range(preds.shape[0]):
-                result_list.append(preds[i, 1])
-                label_list.append(label[i])
-    print(result_list)
-    metric = roc.cal_metric(label_list, result_list)
-    eer = metric[0]
-    tprs = metric[1]
-    auc = metric[2]
-    xy_dic = metric[3]
-    pickle.dump(xy_dic, open('result/xy.pickle', 'wb'))
-    print('EER: {:.6f} TPR(1.0%): {:.6f} TPR(.5%): {:.6f} AUC: {:.8f}'.format(
-        eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc), file=open('result/test.txt', 'a'))
-    print('EER: {:.6f} TPR(1.0%): {:.6f} TPR(.5%): {:.6f} AUC: {:.8f}'.format(
-        eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc))
-
 
 def help():
     '''

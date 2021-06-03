@@ -2,6 +2,7 @@ import sys
 
 txt_dir = sys.argv[1]
 
+# clear duplicate lines in our broken images text file
 def clear_duplicate():
     s = set()
     with open(txt_dir, "r") as file_object:

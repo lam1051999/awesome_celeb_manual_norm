@@ -1,11 +1,6 @@
 # coding: utf8
-import pickle
-import torch.utils.data as Data
-from PIL import ImageFilter
 import random
 import torch
-from torchvision import transforms
-from torch.autograd import Variable
 import numpy as np
 from PIL import Image
 import json
@@ -32,9 +27,16 @@ class mergedData(torch.utils.data.Dataset):
         random.shuffle(self.img_label)
 
     def load_filelists(self, filelists):
+        # load label json file
         json_dict = json.load(open(filelists[1]))
         json_dict_keys = list(json_dict.keys())
+
+        # to make sure train and val images are not duplicate
         json_dict_keys.sort()
+
+        # train images = 85% images from train folder
+        # val images = 15% images from train folder
+        # test images = images from test folder
         if self.type_train == "train":
             for k in json_dict_keys[:int(len(json_dict_keys) * 85/100)]:
                 p_ = os.path.join(self.base_dir, k.replace("Data", "photo_crop"))
@@ -60,7 +62,7 @@ class mergedData(torch.utils.data.Dataset):
             raise Exception("No available data type")
 
 
-    def __getitem__(self, index):  # 第二步装载数据，返回[img,label]
+    def __getitem__(self, index):
         if self.test == False:
             image_path = self.img_label[index]['path']
             label = self.img_label[index]['class']
@@ -84,31 +86,30 @@ class mergedData(torch.utils.data.Dataset):
                 if "train" in image_path:
                     if "spoof" in image_path:
                         temp = cv2.imread(os.path.join(opt.our_train_temp_images, "spoof.jpg"))
-                        temp = cv2.resize(
-                            temp, (self.image_size, self.image_size))
-                        temp = temp/255.0
-                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
+                        temp = Image.fromarray(temp)
+                        if self.transform is not None:
+                            temp = self.transform(temp)
+                        return temp, 1
                     else:
                         temp = cv2.imread(os.path.join(opt.our_train_temp_images, "live.jpeg"))
-                        temp = cv2.resize(
-                            temp, (self.image_size, self.image_size))
-                        temp = temp/255.0
-                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
+                        temp = Image.fromarray(temp)
+                        if self.transform is not None:
+                            temp = self.transform(temp)
+                        return temp, 0
                 else:
                     if "spoof" in image_path:
                         temp = cv2.imread(os.path.join(opt.our_test_temp_images, "spoof.jpg"))
-                        temp = cv2.resize(
-                            temp, (self.image_size, self.image_size))
-                        temp = temp/255.0
-                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
+                        temp = Image.fromarray(temp)
+                        if self.transform is not None:
+                            temp = self.transform(temp)
+                        return temp, 1
                     else:
                         temp = cv2.imread(os.path.join(opt.our_test_temp_images, "live.jpeg"))
-                        temp = cv2.resize(
-                            temp, (self.image_size, self.image_size))
-                        temp = temp/255.0
-                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
+                        temp = Image.fromarray(temp)
+                        if self.transform is not None:
+                            temp = self.transform(temp)
+                        return temp, 0
 
-            # write logic for the data if it is test data
 
     def __len__(self):
         return len(self.img_label)

@@ -5,9 +5,7 @@ from tqdm import tqdm
 from EDABK_utils import check_path_exist, shuffle_dictionary
 import json
 
-# python EDABK_change_filenames.py train
-# python EDABK_change_filenames.py test
-
+# change F19 image filenames and create label json file
 def main() -> None:
     type_dir = sys.argv[1]
     if type_dir != "train" and type_dir != "test":

@@ -4,6 +4,7 @@ import shutil
 from tqdm import tqdm
 import random
 
+# get images path from CelebA-Spoof root data folder
 def get_path(path, mode):
     print("Getting {} label!!!".format(mode))
     list_paths = []
@@ -25,6 +26,7 @@ def get_path(path, mode):
                     list_paths.append(os.path.join(spoof_tempt, file))
     return list_paths
 
+# extract a small amount of images from the whole CelebA-Spoof dataset
 def extract_sub_images(dictionary, sub_key):
     print("Extracting sub images!!!")
     sub_dictionary = {}
@@ -39,6 +41,7 @@ def check_path_exist(path: str) -> None:
     if not os.path.exists(path):
         os.makedirs(path)
 
+# copy files from CelebA-Spoof root folder to our root folder, reserve folder structure 
 def move_files(root_dir: str ,destination_dir: str, source_dirs: List, label: str) -> None:
     count = 0
     for p_ in tqdm(source_dirs):
@@ -51,7 +54,7 @@ def move_files(root_dir: str ,destination_dir: str, source_dirs: List, label: st
 
     print("Extracted {} {} !!!".format(count, label))
 
-
+# random shuffle a dictionary
 def shuffle_dictionary(d: dict) -> dict:
     keys = list(d.keys())
     random.shuffle(keys)

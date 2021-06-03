@@ -5,6 +5,7 @@ import json
 from EDABK_utils import get_path, extract_sub_images, check_path_exist
 from config import opt
 
+# get json file for small amount of images we get
 def main():
     # Paths
     data_path = os.path.join(opt.print_root, 'Data')

@@ -24,10 +24,13 @@ def cal_metric(groundTruth, predicted):
 
 	eer=xnew[np.argmin(znew)]
 
-#	print('EER',eer)
+	# interpolate thresholds
+	func_2 = interpolate.interp1d(x, thresholds)
+	thresholds_new = func_2(xnew)
+
+	print("Threshold at eer: {}".format(thresholds_new[np.argmin(znew)]))
 
 	FPR = {"TPR(1.%)": 0.01, "TPR(.5%)": 0.005}
-
 
 	TPRs = {"TPR(1.%)": 0.01, "TPR(.5%)": 0.005}
 	for i, (key, value) in enumerate(FPR.items()):
@@ -38,7 +41,7 @@ def cal_metric(groundTruth, predicted):
 
 		TPRs[key] = float(np.squeeze(score))
 #	    print(key, score)
-	if 0:
+	if 1:
 		plt.plot(xnew, ynew)
 		plt.title("ROC curve")
 		plt.xlabel("FPR")
@@ -49,9 +52,6 @@ def cal_metric(groundTruth, predicted):
 
 	return eer,TPRs, auc, {'x':xnew, 'y':ynew}
 
-# ground_truth = [1, 1, 0, 0, 0, 1, 0, 0, 1, 1]
-# predicted = [0.78, 0.34, 0.1, 0.2, 0.3, 0.89, 0.2, 0.45, 0.6, 0.2]
-# eer, TPRs, auc, d = cal_metric(ground_truth, predicted)
-# print("Err: {}".format(eer))
-# print("TPRs: {}".format(TPRs))
-# print("auc: {}".format(auc))
+groundTruth = [1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1]
+predicted = [0.8, 0.1, 0.1, 0.05, 0.3, 0.5, 0.2, 0.3, 0.79, 0.98, 0.7, 0.2, 0.95]
+cal_metric(groundTruth, predicted)

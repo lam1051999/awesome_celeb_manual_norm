@@ -1,8 +1,5 @@
 from __future__ import print_function
-import sys
-import os
 import datetime
-import time
 import numpy as np
 import mxnet as mx
 from mxnet import ndarray as nd

@@ -1,5 +1,0 @@
-/media/tranlam/Data_Storage/AI/Liveness/complete/photo_celeb/CelebA_Spoof/Data/train/9471/live/020843.jpg
-/media/tranlam/Data_Storage/AI/Liveness/complete/photo_celeb/CelebA_Spoof/Data/train/9278/live/021327.jpg
-/media/tranlam/Data_Storage/AI/Liveness/complete/our_data/Data/train/A2/live/20000254.jpeg
-/media/tranlam/Data_Storage/AI/Liveness/complete/our_data/Data/train/A1/live/10000394.jpeg
-/media/tranlam/Data_Storage/AI/Liveness/complete/our_data/Data/train/A1/live/10000078.jpeg

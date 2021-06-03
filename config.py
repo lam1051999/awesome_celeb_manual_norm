@@ -4,7 +4,7 @@ import warnings
 import os
 
 class DefaultConfig(object):
-    model = 'MultiscaleresNet18'  # 使用的模型，名字必须与models/__init__.py中的名字一致
+    model = 'MultiscaleresNet18'
     env = model
     ATTACK = 1
     GENUINE = 0
@@ -20,30 +20,18 @@ class DefaultConfig(object):
     NUMBER_OF_A4_TRAIN = 1500
     NUMBER_OF_A4_TEST = 500
 
-    GET_ALL_CELEB_REPLAY = False
-    NUMBER_OF_PC_TRAIN = 1500
-    NUMBER_OF_PC_TEST = 500
-    NUMBER_OF_PAD_TRAIN = 1500
-    NUMBER_OF_PAD_TEST = 500
-    NUMBER_OF_PHONE_TRAIN = 1500
-    NUMBER_OF_PHONE_TEST = 500
-
+    # CelebA-Spoof root folder
     root = "/home/tranlam/Downloads/celeb/CelebA_Spoof/"
+    # our working directory
     base_dir = "/media/tranlam/Data_Storage/AI/Liveness/complete/"
 
+    # CelebA-Spoof photo images root folder
     print_root = os.path.join(base_dir, "photo_celeb/CelebA_Spoof/") 
-    replay_root = os.path.join(base_dir, "replay_celeb/CelebA_Spoof/")
 
     intra_test_photo_temp = os.path.join(print_root, "metas/intra_test/")
-    intra_test_replay_temp = os.path.join(replay_root, "metas/intra_test/")
     
     our_data = os.path.join(base_dir, "our_data/")
     our_label = os.path.join(our_data, "label/")
-
-    make_crop_broken_images = os.path.join(base_dir, "awesome_celeb/broken_images/make_crop_image/")
-    rqds_crop_broken_images_train = os.path.join(base_dir, "awesome_celeb/broken_images/require_dataset_crop/")
-    train_temp_images = os.path.join(base_dir, "awesome_celeb/train_temp/")
-    test_temp_images = os.path.join(base_dir, "awesome_celeb/test_temp/")
 
     make_crop_our_broken_images = os.path.join(base_dir, "awesome_celeb/our_broken_images/make_crop_image/")
     rqds_crop_our_broken_images_train = os.path.join(base_dir, "awesome_celeb/our_broken_images/require_dataset_crop/")
@@ -57,13 +45,6 @@ class DefaultConfig(object):
         print_root, os.path.join(intra_test_photo_temp, "test_label.json")
     ]
 
-    celeb_replay_train_filelists = [
-        replay_root, os.path.join(intra_test_replay_temp, "train_label.json")
-    ]
-    celeb_replay_test_filelists = [
-        replay_root, os.path.join(intra_test_replay_temp, "test_label.json")
-    ]
-
     data_train_filelists = [
         our_data, os.path.join(our_label, "train.json")
     ]
@@ -71,6 +52,8 @@ class DefaultConfig(object):
         our_data, os.path.join(our_label, "test.json")
     ]
 
+    # you can use resnet10 or yolo-face detector if you want the face detector run faster
+    # here are the components to embedd in dnn module of open-cv
     protoPath = os.path.join(base_dir, "awesome_celeb/crop_model/deploy.prototxt") 
     modelPath = os.path.join(base_dir, "awesome_celeb/crop_model/res10_300x300_ssd_iter_140000.caffemodel")
     yolo_config_path = os.path.join(base_dir, "awesome_celeb/crop_model/yolo-face-500k.cfg")
@@ -79,8 +62,8 @@ class DefaultConfig(object):
     IMG_HEIGHT = 300
     YOLO_IMG_WIDTH = 320
     YOLO_IMG_HEIGHT = 320
-    # load_model_path = 'checkpoints/model.pth' # 加载预训练的模型的路径，为None代表不加载
-    load_model_path = None  # 加载预训练的模型的路径，为None代表不加载
+
+    load_model_path = None 
 
     batch_size = 16  # batch size
     use_gpu = torch.cuda.is_available()  # use GPU or not
@@ -94,7 +77,7 @@ class DefaultConfig(object):
     lr = 0.01  # initial learning rate
     lr_decay = 0.5  # when val_loss increase, lr = lr*lr_decay
     lr_stepsize = 3  # learning step size
-    weight_decay = 1e-5  # 损失函数
+    weight_decay = 1e-5 
     cropscale = 3.5
     image_size = 224
 
@@ -103,14 +86,11 @@ def parse(self, kwargs):
     '''
     根据字典kwargs 更新 config参数
     '''
-    # 更新配置参数
     for k, v in kwargs.items():
         if not hasattr(self, k):
-            # 警告还是报错，取决于你个人的喜好
             warnings.warn("Warning: opt has not attribut %s" % k)
         setattr(self, k, v)
 
-    # 打印配置信息
     print('user config:')
     for k, v in self.__class__.__dict__.items():
         if not k.startswith('__'):
