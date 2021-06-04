@@ -6,7 +6,6 @@ from data import mergedData
 from torch.utils.data import DataLoader, ConcatDataset
 from torchnet import meter
 from tqdm import tqdm
-from torchvision import transforms
 import torch
 from torchsummary import summary
 from torch.optim import lr_scheduler
@@ -31,47 +30,6 @@ def maxcrop(img):
     img = img.crop(((w-size)//2, (h-size)//2, w-(w-size)//2, h-(h-size)//2))
     return img
 
-
-
-
-data_transforms = {
-	'train' : transforms.Compose([
-		#transforms.RandomRotation((45)),
-		# transforms.RandomHorizontalFlip(),
-		# transforms.RandomVerticalFlip(),
-		#transforms.Lambda(maxcrop),
-		#transforms.Lambda(blur),
-		transforms.Resize((224,224)) ,
-	   	transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-	]) ,
-    'train_aug': transforms.Compose([
-		#transforms.RandomRotation((45)),
-		# transforms.RandomHorizontalFlip(),
-		transforms.RandomVerticalFlip(p=1),
-		#transforms.Lambda(maxcrop),
-		#transforms.Lambda(blur),
-		transforms.Resize((224,224)) ,
-	   	transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-    ]),
-	'val' : transforms.Compose([
-		#transforms.Lambda(maxcrop),
-		transforms.Resize((224,224)),
-		#transforms.RandomHorizontalFlip(),
-		transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-	]),
-	'test' : transforms.Compose([
-		#transforms.Lambda(maxcrop),
-		transforms.Resize((224,224)) ,
-		#transforms.RandomHorizontalFlip(),
-		transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-	]) ,}
-
-
-
 def train(**kwargs):
     opt.parse(kwargs)
     model = getattr(models, opt.model)()
@@ -87,12 +45,12 @@ def train(**kwargs):
     check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/checkpoints"))
 
     # initialize datasets
-    train_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=data_transforms["train"],
+    train_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
                             test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
-    val_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=data_transforms["val"],
+    val_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
                           test=False, data_source=None, type_train="val", base_dir=opt.base_dir)
 
-    train_data_aug = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=data_transforms["train_aug"],
+    train_data_aug = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
                             test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
 
     # concat original dataset with its augmentation
@@ -249,7 +207,7 @@ def test(**kwargs):
     if opt.use_gpu:
         model.cuda()
     model.train(False)
-    test_data = mergedData(filelists=opt.celeb_test_filelists, data_filelists=opt.data_test_filelists, transform=data_transforms["test"],
+    test_data = mergedData(filelists=opt.celeb_test_filelists, data_filelists=opt.data_test_filelists, transform=None,
                            test=False, data_source=None, type_train="test", base_dir=opt.base_dir)
 
     test_loader = DataLoader(

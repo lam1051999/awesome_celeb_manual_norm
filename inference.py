@@ -1,4 +1,3 @@
-from PIL import Image
 from config import opt
 import os
 import models
@@ -6,46 +5,9 @@ import torch
 import numpy as np
 import cv2
 import glob
-from torchvision import transforms
 from EDABK_utils import check_path_exist
 
 from retinaface import RetinaFace
-
-data_transforms = {
-	'train' : transforms.Compose([
-		#transforms.RandomRotation((45)),
-		# transforms.RandomHorizontalFlip(),
-		# transforms.RandomVerticalFlip(),
-		#transforms.Lambda(maxcrop),
-		#transforms.Lambda(blur),
-		transforms.Resize((224,224)) ,
-	   	transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-	]) ,
-    'train_aug': transforms.Compose([
-		#transforms.RandomRotation((45)),
-		# transforms.RandomHorizontalFlip(),
-		transforms.RandomVerticalFlip(),
-		#transforms.Lambda(maxcrop),
-		#transforms.Lambda(blur),
-		transforms.Resize((224,224)) ,
-	   	transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-    ]),
-	'val' : transforms.Compose([
-		#transforms.Lambda(maxcrop),
-		transforms.Resize((224,224)),
-		#transforms.RandomHorizontalFlip(),
-		transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-	]),
-	'test' : transforms.Compose([
-		#transforms.Lambda(maxcrop),
-		transforms.Resize((224,224)) ,
-		#transforms.RandomHorizontalFlip(),
-		transforms.ToTensor(),
-		transforms.Normalize([0.485 , 0.456 , 0.406] , [0.229 , 0.224 , 0.225])
-	]) ,}
 
 
 def inference(**kwargs):
@@ -120,9 +82,11 @@ def inference(**kwargs):
                     crop_face = img[startY:endY, startX:endX]
 
                     if 0 not in crop_face.shape:
-                        crop_face = Image.fromarray(crop_face)
-                        crop_face = data_transforms["test"](crop_face)
-                        crop_face = torch.unsqueeze(crop_face, 0)
+                        crop_face = cv2.resize(crop_face, (opt.image_size, opt.image_size))
+                        crop_face = crop_face/255
+                        crop_face = np.transpose(np.array(crop_face, dtype=np.float32), (2, 0, 1))
+                        crop_face = crop_face[np.newaxis, :]
+                        crop_face = torch.FloatTensor(crop_face)
 
                         with torch.no_grad():
                             if opt.use_gpu:

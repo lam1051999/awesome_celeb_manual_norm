@@ -68,10 +68,11 @@ class mergedData(torch.utils.data.Dataset):
             label = self.img_label[index]['class']
             try:
                 img = cv2.imread(image_path)
-                img = Image.fromarray(img)
+                img = cv2.resize(img, (self.image_size, self.image_size))
+                img = img/255.0
                 if self.transform is not None:
                     img = self.transform(img)
-                return img, int(label)
+                return np.transpose(np.array(img, dtype=np.float32), (2, 0, 1)), int(label)
 
             except Exception as e:
                 # get broken images
@@ -86,29 +87,29 @@ class mergedData(torch.utils.data.Dataset):
                 if "train" in image_path:
                     if "spoof" in image_path:
                         temp = cv2.imread(os.path.join(opt.our_train_temp_images, "spoof.jpg"))
-                        temp = Image.fromarray(temp)
-                        if self.transform is not None:
-                            temp = self.transform(temp)
-                        return temp, 1
+                        temp = cv2.resize(
+                            temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
+                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
                     else:
                         temp = cv2.imread(os.path.join(opt.our_train_temp_images, "live.jpeg"))
-                        temp = Image.fromarray(temp)
-                        if self.transform is not None:
-                            temp = self.transform(temp)
-                        return temp, 0
+                        temp = cv2.resize(
+                            temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
+                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
                 else:
                     if "spoof" in image_path:
                         temp = cv2.imread(os.path.join(opt.our_test_temp_images, "spoof.jpg"))
-                        temp = Image.fromarray(temp)
-                        if self.transform is not None:
-                            temp = self.transform(temp)
-                        return temp, 1
+                        temp = cv2.resize(
+                            temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
+                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 1
                     else:
                         temp = cv2.imread(os.path.join(opt.our_test_temp_images, "live.jpeg"))
-                        temp = Image.fromarray(temp)
-                        if self.transform is not None:
-                            temp = self.transform(temp)
-                        return temp, 0
+                        temp = cv2.resize(
+                            temp, (self.image_size, self.image_size))
+                        temp = temp/255.0
+                        return np.transpose(np.array(temp, dtype=np.float32), (2, 0, 1)), 0
 
 
     def __len__(self):
