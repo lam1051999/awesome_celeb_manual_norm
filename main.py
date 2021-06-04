@@ -81,9 +81,9 @@ def train(**kwargs):
 
 
     confusion_matrix = meter.ConfusionMeter(2)
-    train_loss = meter.AverageValueMeter()  # 为了可视化增加的内容
+    train_loss = meter.AverageValueMeter() 
     val_loss = meter.AverageValueMeter()
-    train_acc = meter.AverageValueMeter()  # 为了可视化增加的内容
+    train_acc = meter.AverageValueMeter() 
     val_acc = meter.AverageValueMeter()
     previous_loss = 1e100
     best_tpr = 0.0
