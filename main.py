@@ -41,8 +41,8 @@ def train(**kwargs):
     print(opt)
 
     # create result and checkpoints folder
-    check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/result"))
-    check_path_exist(os.path.join(opt.base_dir, "awesome_celeb/checkpoints"))
+    check_path_exist(os.path.join(opt.base_dir, "awesome_celeb_manual_norm/result"))
+    check_path_exist(os.path.join(opt.base_dir, "awesome_celeb_manual_norm/checkpoints"))
 
     # initialize datasets
     train_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
