@@ -4,7 +4,7 @@ import warnings
 import os
 
 class DefaultConfig(object):
-    model = 'MultiscaleresNet18'
+    model = 'MyresNet34'
     env = model
     ATTACK = 1
     GENUINE = 0

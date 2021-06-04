@@ -41,7 +41,7 @@ def cal_metric(groundTruth, predicted):
 
 		TPRs[key] = float(np.squeeze(score))
 #	    print(key, score)
-	if 1:
+	if 0:
 		plt.plot(xnew, ynew)
 		plt.title("ROC curve")
 		plt.xlabel("FPR")
