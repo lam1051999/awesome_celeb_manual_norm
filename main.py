@@ -240,9 +240,6 @@ def test(**kwargs):
         eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc))
 
 def help():
-    '''
-    打印帮助的信息： python file.py help
-    '''
 
     print('''
 	usage : python {0} <function> [--args=value,]
