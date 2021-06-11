@@ -86,7 +86,7 @@ def train(**kwargs):
     train_acc = meter.AverageValueMeter() 
     val_acc = meter.AverageValueMeter()
     previous_loss = 1e100
-    best_tpr = 0.0
+    best_eer = 1.0
 
     # training
     for epoch in range(opt.max_epoch):
@@ -139,16 +139,16 @@ def train(**kwargs):
         xy_dic = metric[3]
         tpr1 = tprs['TPR(1.%)']
         previous_loss = val_loss.value()[0]
-        if tpr1 > best_tpr:
-            best_tpr = tpr1
-            best_tpr_epoch = epoch
+        if eer < best_eer:
+            best_eer = eer
+            best_eer_epoch = epoch
             os.system('mkdir -p %s' % (os.path.join('checkpoints', opt.model)))
             model.save(name='checkpoints/'+opt.model+'/'+str(epoch)+'.pth')
             print('Epoch: {:d} Val Loss: {:.8f} Acc: {:.4f} EER: {:.6f} TPR(1.0%): {:.6f} TPR(.5%): {:.6f} AUC: {:.8f}'.format(
                 epoch, v_loss, v_accuracy, eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc), file=open('result/val.txt', 'a'))
             print('Epoch: {:d} Val Loss: {:.8f} Acc: {:.4f} EER: {:.6f} TPR(1.0%): {:.6f} TPR(.5%): {:.6f} AUC: {:.8f}'.format(
                 epoch, v_loss, v_accuracy, eer, tprs["TPR(1.%)"], tprs["TPR(.5%)"], auc))
-    print('Best val Epoch: {},Best val TPR: {:4f}'.format(best_tpr_epoch, best_tpr))
+    print('Best val Epoch: {},Best val eer: {:4f}'.format(best_eer_epoch, best_eer))
 
 
 def val(model, dataloader, data_len):
