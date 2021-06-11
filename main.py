@@ -50,12 +50,6 @@ def train(**kwargs):
     val_data = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
                           test=False, data_source=None, type_train="val", base_dir=opt.base_dir)
 
-    train_data_aug = mergedData(filelists=opt.celeb_train_filelists, data_filelists=opt.data_train_filelists, transform=None,
-                            test=False, data_source=None, type_train="train", base_dir=opt.base_dir)
-
-    # concat original dataset with its augmentation
-    train_data = ConcatDataset([train_data, train_data_aug])
-
     print(len(train_data))
     print(len(val_data))
 
