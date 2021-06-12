@@ -8,8 +8,9 @@ import glob
 
 from retinaface import RetinaFace
 
-def inference_single_image(image_path):
-    spoof_threshold = 0.5
+def shot(image_path):
+    # change threshold here
+    spoof_threshold = 0.056
 
     # load crop model
     thresh = 0.8
@@ -52,11 +53,6 @@ def inference_single_image(image_path):
                                     scales=scales,
                                     do_flip=flip)
 
-
-    if img.shape[0] < 800 or img.shape[1] < 800:
-        fontScale = 1
-        thickness = 1
-
     if faces is not None:
         for i in range(faces.shape[0]):
             box = faces[i].astype(np.int)
@@ -93,4 +89,4 @@ if __name__ == '__main__':
 
     # change image path here
     image_path = "test.jpg"
-    inference_single_image(image_path)
+    shot(image_path)

@@ -27,9 +27,8 @@ def inference_yoloface(**kwargs):
   
     # load crop model
     
-    thickness = 3
     font = cv2.FONT_HERSHEY_SIMPLEX
-    fontScale = 3
+
     # load model
     pths = glob.glob('checkpoints/%s/*.pth' % (opt.model))
     pths.sort(key=os.path.getmtime, reverse=True)
@@ -51,9 +50,10 @@ def inference_yoloface(**kwargs):
             out_path = os.path.join(output_images, image)
             im = cv2.imread(path)
             (h, w) = im.shape[:2]
-            if h < 800 or w < 800:
-                fontScale = 1
-                thickness = 1
+
+            fontScale = w/600
+            thickness = int(w/200)
+
             classes, scores, boxes = model_yolo.detect(im, CONFIDENCE_THRESHOLD, NMS_THRESHOLD)
 
             for (classid, score, box) in zip(classes, scores, boxes):
@@ -82,8 +82,8 @@ def inference_yoloface(**kwargs):
                                 attack_prob = preds[:, opt.ATTACK]
                                 if sum(attack_prob) >= float(spoof_threshold):
                                     count += 1
-                                im = cv2.putText(im, "Spoof {:.5f}".format(sum(attack_prob)), (startX - 5 if startX - 5 > 0 else startX + 5, startY - 5 if startY - 5 > 0 else startY + 5), font, fontScale, (0, 255, 0) if attack_prob < float(crop_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
-                                im = cv2.rectangle(im, (startX, startY), (endX, endY), (0, 255, 0) if attack_prob < float(crop_threshold) else (0, 0, 255), thickness)
+                                im = cv2.putText(im, "Attack_prob: {:.5f}".format(sum(attack_prob)), (startX - 5 if startX - 5 > 0 else startX + 5, startY - 5 if startY - 5 > 0 else startY + 5), font, fontScale, (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
+                                im = cv2.rectangle(im, (startX, startY), (endX, endY), (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness)
                                 cv2.imwrite(out_path.split(".")[0]+"_evaluated." + out_path.split(".")[1], im)
 
     print("Number of spoof faces in the images in {} is: {}".format(images, count))

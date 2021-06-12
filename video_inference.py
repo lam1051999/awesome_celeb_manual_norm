@@ -11,6 +11,7 @@ from retinaface import RetinaFace
 # insightface detector
 def video_inference(**kwargs):
     path = kwargs['video']
+    spoof_threshold = kwargs["spoof_threshold"]
 
     # load crop model
     thresh = 0.8
@@ -20,10 +21,14 @@ def video_inference(**kwargs):
 
     # initialize video
     cap = cv2.VideoCapture(path)
-    color = (255, 0, 0)
-    thickness = 2 
+    thickness = 5
     font = cv2.FONT_HERSHEY_SIMPLEX
-    fontScale = 1
+    fontScale = 2
+
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    cap_result = cv2.VideoWriter(path.split(".")[0] + "_evaluated." + path.split(".")[1], cv2.VideoWriter_fourcc(*'MJPG'), fps, (frame_width, frame_height))
 
     # load model
     pths = glob.glob('checkpoints/%s/*.pth' % (opt.model))
@@ -38,6 +43,9 @@ def video_inference(**kwargs):
     if opt.use_gpu:
         model.cuda()
     model.train(False)
+
+    print("Processing =========================================================>")
+
     while(True):
         ret, img = cap.read()    
         if not ret:
@@ -77,7 +85,6 @@ def video_inference(**kwargs):
                 crop_face = img[startY:endY, startX:endX]
 
                 if 0 not in crop_face.shape:
-                    img = cv2.rectangle(img, (startX, startY), (endX, endY), color, thickness)
                     crop_face = cv2.resize(crop_face, (opt.image_size, opt.image_size))
                     crop_face = crop_face/255
                     crop_face = np.transpose(np.array(crop_face, dtype=np.float32), (2, 0, 1))
@@ -92,14 +99,10 @@ def video_inference(**kwargs):
                         outputs = torch.softmax(outputs, dim=-1)
                         preds = outputs.to('cpu').numpy()
                         attack_prob = preds[:, opt.ATTACK]
-                        img = cv2.putText(img, "Spoof {:.2f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, color, thickness, cv2.LINE_AA)
+                        img = cv2.putText(img, "Attack_prob: {:.2f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
+                        img = cv2.rectangle(img, (startX, startY), (endX, endY), (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness)
 
-        cv2.imshow('frame',img)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+        cap_result.write(im)
 
 if __name__ == '__main__':
     import fire

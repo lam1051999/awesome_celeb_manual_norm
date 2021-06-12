@@ -72,9 +72,9 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 
 ## Inference
 Trước tiên trong các file `inference.py`, `video_inference.py`, `webcam_inference.py` này, ta phải sửa đường dẫn đến checkpoints của model chúng ta
-- Chạy image inference: `python inference.py inference --images="/home/tranlam/Downloads/im" --output_images="/home/tranlam/Downloads/im_out" --spoof_threshold=0.5`, đầu ra ảnh sau inference nằm trong folder `output_images`. Trong đó, `spoof_threshold` sẽ là ngưỡng mà mình quyết định mặt đó là spoof hay live. Ví dụ: `python inference.py inference --images="/home/tranlam/Downloads/im" --output_images="/home/tranlam/Downloads/im_out" --spoof_threshold=0.5`
-- Chạy video inference: `python video_inference.py video_inference --video="path_to_video"`
-- Chạy webcam inference: `python webcam_inference.py webcam_inference`
+- Chạy image inference: `python inference.py inference --images="/home/tranlam/Downloads/im" --output_images="/home/tranlam/Downloads/im_out" --spoof_threshold=0.056`, đầu ra ảnh sau inference nằm trong folder `output_images`. Trong đó, `spoof_threshold` sẽ là ngưỡng mà mình quyết định mặt đó là spoof hay live. Ví dụ: `python inference.py inference --images="/home/tranlam/Downloads/im" --output_images="/home/tranlam/Downloads/im_out" --spoof_threshold=0.056`
+- Chạy video inference: `python video_inference.py video_inference --video="path_to_video" --spoof_threshold=0.056`
+- Chạy webcam inference: `python webcam_inference.py webcam_inference --spoof_threshold=0.056`
 
 ## Đóng gói code
-Hàm chạy dự đoán khi truyền vào 1 ảnh được đặt trong file `inference_single_image.py`.
+Hàm chạy dự đoán khi truyền vào 1 ảnh được đặt trong file `shot.py`.

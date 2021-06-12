@@ -9,7 +9,8 @@ import glob
 from retinaface import RetinaFace
 
 # insightface detector
-def webcam_inference():
+def webcam_inference(**kwargs):
+    spoof_threshold = kwargs["spoof_threshold"]
 
     # load crop model
     thresh = 0.8
@@ -19,10 +20,9 @@ def webcam_inference():
 
     # initialize webcam
     cap = cv2.VideoCapture(0)
-    color = (255, 0, 0)
-    thickness = 2
+    thickness = 5
     font = cv2.FONT_HERSHEY_SIMPLEX
-    fontScale = 1
+    fontScale = 2
 
     # load model
     pths = glob.glob('checkpoints/%s/*.pth' % (opt.model))
@@ -76,7 +76,6 @@ def webcam_inference():
                 crop_face = img[startY:endY, startX:endX]
 
                 if 0 not in crop_face.shape:
-                    img = cv2.rectangle(img, (startX, startY), (endX, endY), color, thickness)
                     crop_face = cv2.resize(crop_face, (opt.image_size, opt.image_size))
                     crop_face = crop_face/255
                     crop_face = np.transpose(np.array(crop_face, dtype=np.float32), (2, 0, 1))
@@ -91,7 +90,8 @@ def webcam_inference():
                         outputs = torch.softmax(outputs, dim=-1)
                         preds = outputs.to('cpu').numpy()
                         attack_prob = preds[:, opt.ATTACK]
-                        img = cv2.putText(img, "Spoof {:.2f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, color, thickness, cv2.LINE_AA)
+                        img = cv2.putText(img, "Attack_prob: {:.2f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
+                        img = cv2.rectangle(img, (startX, startY), (endX, endY), (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness)
 
         cv2.imshow('frame',img)
         if cv2.waitKey(1) & 0xFF == ord('q'):

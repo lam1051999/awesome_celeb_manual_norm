@@ -22,9 +22,9 @@ def webcam_inference_yoloface(**kwargs):
 
     # initialize webcam
     cap = cv2.VideoCapture(0)
-    thickness = 2
+    thickness = 5
     font = cv2.FONT_HERSHEY_SIMPLEX
-    fontScale = 1
+    fontScale = 2
 
 
     # load model
@@ -72,8 +72,8 @@ def webcam_inference_yoloface(**kwargs):
                             outputs = torch.softmax(outputs, dim=-1)
                             preds = outputs.to('cpu').numpy()
                             attack_prob = preds[:, opt.ATTACK]
-                            im = cv2.putText(im, "Spoof {:.5f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, (0, 255, 0) if attack_prob < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
-                            im = cv2.rectangle(im, (startX, startY), (endX, endY), (0, 255, 0) if attack_prob < float(spoof_threshold) else (0, 0, 255), thickness)
+                            im = cv2.putText(im, "Attack_prob: {:.5f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
+                            im = cv2.rectangle(im, (startX, startY), (endX, endY), (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness)
 
         cv2.imshow('frame',im)
         if cv2.waitKey(1) & 0xFF == ord('q'):

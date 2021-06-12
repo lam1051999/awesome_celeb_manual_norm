@@ -11,3 +11,8 @@ checkpoints-celeb/
 checkpoints-photo-celeb/
 pre-trainedModels/
 model/
+inference_yoloface.py
+video_inference_yoloface.py
+webcam_inference_yoloface.py
+server.py
+SERVER_static/

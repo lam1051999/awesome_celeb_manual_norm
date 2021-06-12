@@ -14,6 +14,7 @@ def inference(**kwargs):
     images = kwargs["images"]
     spoof_threshold = kwargs["spoof_threshold"]
     output_images = kwargs["output_images"]
+    
     check_path_exist(images)
     check_path_exist(output_images)
 
@@ -24,10 +25,8 @@ def inference(**kwargs):
     detector = RetinaFace('./model/R50', 0, gpuid, 'net3')
     PADDING = 10
     
-    color = (0, 0, 255)
-    thickness = 3
     font = cv2.FONT_HERSHEY_SIMPLEX
-    fontScale = 3
+
     # load model
     pths = glob.glob('checkpoints/%s/*.pth' % (opt.model))
     pths.sort(key=os.path.getmtime, reverse=True)
@@ -67,9 +66,8 @@ def inference(**kwargs):
                                             do_flip=flip)
 
 
-            if img.shape[0] < 800 or img.shape[1] < 800:
-                fontScale = 1
-                thickness = 1
+            fontScale = im_shape[1]/600
+            thickness = int(im_shape[1]/200)
 
             if faces is not None:
                 for i in range(faces.shape[0]):
@@ -97,8 +95,8 @@ def inference(**kwargs):
                             attack_prob = preds[:, opt.ATTACK]
                             if sum(attack_prob) >= float(spoof_threshold):
                                 count += 1
-                            img = cv2.putText(img, "Spoof {:.2f}".format(sum(attack_prob)), (startX - 5 if startX - 5 > 0 else startX + 5, startY - 5 if startY - 5 > 0 else startY + 5), font, fontScale, color, thickness, cv2.LINE_AA)
-                            img = cv2.rectangle(img, (startX, startY), (endX, endY), color, thickness)
+                            img = cv2.putText(img, "Attack_prob: {:.2f}".format(sum(attack_prob)), (startX - 5 if startX - 5 > 0 else startX + 5, startY - 5 if startY - 5 > 0 else startY + 5), font, fontScale, (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
+                            img = cv2.rectangle(img, (startX, startY), (endX, endY), (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness)
                             cv2.imwrite(output_path, img)
 
     print("Number of spoof faces in the images in {} is: {}".format(images, count))
