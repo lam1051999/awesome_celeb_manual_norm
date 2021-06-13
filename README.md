@@ -22,7 +22,7 @@ Ví dụ dưới đây là sơ đồ `base_dir`, gồm folder `awesome_celeb_man
 
 ![our data](readme_images/our_data_new.png)
 
-**Chú ý:** Cần kiểm tra đúng thứ tự các ảnh (ảnh trực diện -> ảnh góc 12h -> ảnh góc 3h -> ảnh góc 6h -> ảnh góc 9h) trong các folder live và spoof, có thể trong quá trình di chuyển ảnh bị mất mát một số ảnh, nhưng, code chỉ chạy đúng nếu như thứ tự các ảnh đúng.
+**Chú ý:** Cần kiểm tra đúng thứ tự các ảnh (ảnh trực diện -> ảnh góc 12h -> ảnh góc 3h -> ảnh góc 6h -> ảnh góc 9h) trong các folder live và spoof, có thể trong quá trình di chuyển ảnh bị mất mát một số ảnh, nhưng, code chỉ tạo các thuộc tính ảnh đúng nếu thứ tự các ảnh đúng.
 - Đổi tên ảnh train: `python EDABK_change_filenames.py train`
 - Đổi tên ảnh test: `python EDABK_change_filenames.py test`
 
