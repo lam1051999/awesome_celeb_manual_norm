@@ -47,6 +47,9 @@ Phần annotation detail của celeb, ta thấy rằng các ảnh in gồm (phot
 - Cắt ảnh test: `python make_crop_data.py test`
 - **Đặc biệt chú ý:** khi chạy code, nếu các dòng print có nhắc đến vấn đề out of memory của GPU, hãy dừng code.
 
+## Hàm loss
+- Có 2 lựa chọn sử dụng hàm loss: FocalLoss và Dual FocalLoss.
+
 ## Huấn luyện
 - Có thể chỉnh sửa một số thông số trong **config.py**, chọn mạng backbone, batchsize, epoch,...
 - Để huấn luyện mạng: `python main.py train`

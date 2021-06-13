@@ -33,10 +33,10 @@ class DefaultConfig(object):
     our_data = os.path.join(base_dir, "our_data/")
     our_label = os.path.join(our_data, "label/")
 
-    make_crop_our_broken_images = os.path.join(base_dir, "awesome_celeb/our_broken_images/make_crop_image/")
-    rqds_crop_our_broken_images_train = os.path.join(base_dir, "awesome_celeb/our_broken_images/require_dataset_crop/")
-    our_train_temp_images = os.path.join(base_dir, "awesome_celeb/our_train_temp/")
-    our_test_temp_images = os.path.join(base_dir, "awesome_celeb/our_test_temp/")
+    make_crop_our_broken_images = os.path.join(base_dir, "awesome_celeb_manual_norm/our_broken_images/make_crop_image/")
+    rqds_crop_our_broken_images_train = os.path.join(base_dir, "awesome_celeb_manual_norm/our_broken_images/require_dataset_crop/")
+    our_train_temp_images = os.path.join(base_dir, "awesome_celeb_manual_norm/our_train_temp/")
+    our_test_temp_images = os.path.join(base_dir, "awesome_celeb_manual_norm/our_test_temp/")
 
     celeb_train_filelists = [
         print_root, os.path.join(intra_test_photo_temp, "train_label.json")
@@ -54,10 +54,10 @@ class DefaultConfig(object):
 
     # you can use resnet10 or yolo-face detector if you want the face detector run faster
     # here are the components to embedd in dnn module of open-cv
-    protoPath = os.path.join(base_dir, "awesome_celeb/crop_model/deploy.prototxt") 
-    modelPath = os.path.join(base_dir, "awesome_celeb/crop_model/res10_300x300_ssd_iter_140000.caffemodel")
-    yolo_config_path = os.path.join(base_dir, "awesome_celeb/crop_model/yolo-face-500k.cfg")
-    yolo_weights_path = os.path.join(base_dir, "awesome_celeb/crop_model/yolo-face-500k.weights")
+    protoPath = os.path.join(base_dir, "awesome_celeb_manual_norm/crop_model/deploy.prototxt") 
+    modelPath = os.path.join(base_dir, "awesome_celeb_manual_norm/crop_model/res10_300x300_ssd_iter_140000.caffemodel")
+    yolo_config_path = os.path.join(base_dir, "awesome_celeb_manual_norm/crop_model/yolo-face-500k.cfg")
+    yolo_weights_path = os.path.join(base_dir, "awesome_celeb_manual_norm/crop_model/yolo-face-500k.weights")
     IMG_WIDTH = 300
     IMG_HEIGHT = 300
     YOLO_IMG_WIDTH = 320
