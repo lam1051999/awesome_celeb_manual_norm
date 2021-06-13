@@ -80,6 +80,7 @@ def shot(image_path):
 
                     # if there is a spoof face in the image
                     if sum(attack_prob) >= float(spoof_threshold):
+                        print("Attack probability: {}".format(sum(attack_prob)))
                         return True
 
     # if there is no spoof face in the image
