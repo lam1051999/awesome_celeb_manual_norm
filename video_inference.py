@@ -99,7 +99,7 @@ def video_inference(**kwargs):
                         outputs = torch.softmax(outputs, dim=-1)
                         preds = outputs.to('cpu').numpy()
                         attack_prob = preds[:, opt.ATTACK]
-                        img = cv2.putText(img, "Attack_prob: {:.2f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
+                        img = cv2.putText(img, "Attack_prob: {:.5f}".format(sum(attack_prob)), (startX - 5, startY - 5), font, fontScale, (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness, cv2.LINE_AA)
                         img = cv2.rectangle(img, (startX, startY), (endX, endY), (0, 255, 0) if sum(attack_prob) < float(spoof_threshold) else (0, 0, 255), thickness)
 
         cap_result.write(img)
