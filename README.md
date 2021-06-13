@@ -13,7 +13,7 @@ Sửa 2 đường dẫn trong **config.py** như sau:
 - `root` là đường dẫn đến tập dữ liệu Celeb được tải về.
 - `base_dir` là đường dẫn đến folder muốn đặt môi trường làm việc.
 
-Ví dụ dưới đây là sơ đồ `base_dir`, gồm folder `awesome_celeb` là folder chứa code của chúng ta, folder `metas` là folder label của mục label của chúng ta, `photo_celeb` là folder chứa ảnh đã tách, `venv` là folder môi trường thư viện.
+Ví dụ dưới đây là sơ đồ `base_dir`, gồm folder `awesome_celeb_manual_norm` là folder code, `our_data` là folder ảnh dữ liệu F19, `photo_celeb` là folder ảnh dữ liệu photo từ CelebA-Spoof, `photo_crop` là tất cả ảnh dữ liệu đã được cắt.
 
 ![directory detail](readme_images/dir.png)
 
