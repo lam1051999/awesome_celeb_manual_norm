@@ -52,9 +52,9 @@ def cal_metric(groundTruth, predicted):
 
 	return eer,TPRs, auc, {'x':xnew, 'y':ynew}
 
-groundTruth = [1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1]
-predicted = [0.8, 0.1, 0.1, 0.05, 0.3, 0.5, 0.2, 0.3, 0.79, 0.98, 0.7, 0.2, 0.95]
-cal_metric(groundTruth, predicted)
+# groundTruth = [1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1]
+# predicted = [0.8, 0.1, 0.1, 0.05, 0.3, 0.5, 0.2, 0.3, 0.79, 0.98, 0.7, 0.2, 0.95]
+# cal_metric(groundTruth, predicted)
 
 
 # from scipy.optimize import brentq

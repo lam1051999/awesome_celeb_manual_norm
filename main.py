@@ -18,7 +18,6 @@ from EDABK_utils import check_path_exist
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-
 def blur(img):
     img = img.filter(ImageFilter.GaussianBlur(radius=random.random()))
     return img
@@ -222,6 +221,7 @@ def test(**kwargs):
             for i in range(preds.shape[0]):
                 result_list.append(preds[i, 1])
                 label_list.append(label[i].item())
+
     metric = roc.cal_metric(label_list, result_list)
     eer = metric[0]
     tprs = metric[1]
